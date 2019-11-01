@@ -39,6 +39,7 @@ author:             Malte Brandy
 -- An email address to which users can send suggestions, bug reports, and
 -- patches.
 maintainer:         malte.brandy@maralorn.de
+tested-with:        GHC ==8.6.5 || ==8.8.1
 
 -- A copyright notice.
 -- copyright:
