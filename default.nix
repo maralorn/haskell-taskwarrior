@@ -15,6 +15,8 @@ in {
       brittany
       haskell-ci
       shake
+      packdeps
+      packunused
       pkgs.coreutils
     ];
   };
