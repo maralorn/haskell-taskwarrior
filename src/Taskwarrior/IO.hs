@@ -17,6 +17,7 @@ import           System.Process                 ( withCreateProcess
                                                 )
 import           System.IO                      ( hClose )
 import           System.Exit                    ( ExitCode(..) )
+import           Control.Monad                  ( when )
 
 getTasks :: [Text] -> IO [Task]
 getTasks args =
@@ -43,4 +44,4 @@ saveTasks tasks =
         LBS.hPut stdin . Aeson.encode $ tasks
         hClose stdin
         exitCode <- waitForProcess process
-        if exitCode /= ExitSuccess then fail $ show exitCode else return ()
+        when (exitCode /= ExitSuccess) $ fail . show $ exitCode
