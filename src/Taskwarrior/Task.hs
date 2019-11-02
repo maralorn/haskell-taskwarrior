@@ -5,7 +5,6 @@ where
 
 import qualified Data.Text                     as Text
 import           Data.Text                      ( Text )
-import           Data.Text.Encoding             ( encodeUtf8 )
 import           Data.Time                      ( UTCTime )
 import qualified Data.UUID                     as UUID
 import           Data.UUID                      ( UUID )

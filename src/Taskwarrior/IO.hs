@@ -6,23 +6,15 @@ where
 
 import           Taskwarrior.Task               ( Task )
 import           Data.Text                      ( Text )
-import           Control.Exception              ( throw )
 import qualified Data.Text                     as Text
-import qualified Data.Text.IO                  as Text
-import qualified Data.Text.Encoding            as Text
-import qualified Data.Text.Lazy                as LText
-import qualified Data.Text.Lazy.Encoding       as LText
 import qualified Data.ByteString.Lazy          as LBS
 import qualified Data.Aeson                    as Aeson
-import           System.Process                 ( readProcess
-                                                , withCreateProcess
+import           System.Process                 ( withCreateProcess
                                                 , CreateProcess(..)
                                                 , proc
                                                 , StdStream(..)
                                                 , waitForProcess
                                                 )
-import           Control.Monad                  ( void )
-import           Control.Concurrent             ( threadDelay )
 import           System.IO                      ( hClose )
 import           System.Exit                    ( ExitCode(..) )
 
@@ -33,22 +25,21 @@ getTasks args =
         { std_out = CreatePipe
         }
       )
-    $ \_ stdout _ _ -> do
+    $ \_ stdoutMay _ _ -> do
         stdout <- maybe
           (fail "Couldn‘t create stdout handle for `task export`")
           pure
-          stdout
+          stdoutMay
         input <- LBS.hGetContents stdout
         either fail return . Aeson.eitherDecode $ input
 
 saveTasks :: [Task] -> IO ()
 saveTasks tasks =
-  withCreateProcess
-      ((proc "task" ["import"]) { std_in = CreatePipe })
-    $ \stdin _ _ process -> do
+  withCreateProcess ((proc "task" ["import"]) { std_in = CreatePipe })
+    $ \stdinMay _ _ process -> do
         stdin <- maybe (fail "Couldn‘t create stdin handle for `task import`")
                        pure
-                       stdin
+                       stdinMay
         LBS.hPut stdin . Aeson.encode $ tasks
         hClose stdin
         exitCode <- waitForProcess process

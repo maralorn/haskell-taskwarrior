@@ -14,6 +14,7 @@ data MaskState = Pending | Completed | Deleted | Waiting deriving (Eq, Show, Enu
 
 newtype Mask = Mask {mask :: [MaskState]} deriving (Eq, Read, Ord, Show)
 
+toChar :: MaskState -> Char
 toChar = \case
   Pending   -> '.'
   Completed -> '+'
