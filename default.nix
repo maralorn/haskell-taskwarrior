@@ -3,7 +3,6 @@
 let
   haskellPackages = pkgs.haskellPackages;
   drv = haskellPackages.callCabal2nix "taskwarrior" ./. { };
-
 in {
   taskwarrior = drv;
   shell = haskellPackages.shellFor {
@@ -15,8 +14,6 @@ in {
       brittany
       haskell-ci
       shake
-      packdeps
-      packunused
       pkgs.coreutils
     ];
   };

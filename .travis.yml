@@ -102,6 +102,8 @@ install:
   - |
     echo "packages: ." >> cabal.project
   - |
+    echo "package taskwarrior"    >> cabal.project
+    echo "  ghc-options: -Werror" >> cabal.project
   - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(taskwarrior)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
@@ -127,6 +129,8 @@ script:
   - |
     echo "packages: ${PKGDIR_taskwarrior}" >> cabal.project
   - |
+    echo "package taskwarrior"    >> cabal.project
+    echo "  ghc-options: -Werror" >> cabal.project
   - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(taskwarrior)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
