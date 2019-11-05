@@ -16,8 +16,6 @@ jobs:
       with:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
-    - name: list
-      run: ls -al
       #    - name: Cache node modules
       #uses: actions/cache@v1
       #with:
@@ -28,10 +26,14 @@ jobs:
       #    ${{ runner.OS }}-build-
       #    ${{ runner.OS }}-
 
-    - name: Update cabal
-      run: cabal new-update
+    - name: Prepare cabal
+      run: |
+         cabal new-update
+         cabal new-build --only-dependencies
+    - name: list
+      run: ls -al
     - name: Build
-      run: cabal new-build
+      run: cabal new-build --ghc-option -Werror
     - name: Run tests
       run: cabal new-test
     - name: Run haddock
