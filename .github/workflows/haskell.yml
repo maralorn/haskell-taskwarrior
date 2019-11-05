@@ -16,6 +16,18 @@ jobs:
       with:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
+    - name: list
+      run: ls -al
+      #    - name: Cache node modules
+      #uses: actions/cache@v1
+      #with:
+      #  path: node_modules
+      #  key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+      #  restore-keys: |
+      #    ${{ runner.OS }}-build-${{ env.cache-name }}-
+      #    ${{ runner.OS }}-build-
+      #    ${{ runner.OS }}-
+
     - name: Update cabal
       run: cabal new-update
     - name: Build
