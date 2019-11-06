@@ -28,7 +28,8 @@ jobs:
       run: |
          cabal new-update
          cabal new-build --only-dependencies
-         cabal new-install hlint ormolu --installdir=.
+         #         cabal new-install hlint ormolu --installdir=.
+         cabal new-install hlint --installdir=.
     - name: Try build with warnings
       run: |
          cabal new-configure --ghc-option -Werror
