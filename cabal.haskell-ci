@@ -1,3 +1,0 @@
-hlint:                  True
-local-ghc-options:       -Werror
-irc-channels:           irc.freenode.org#haskell-taskwarrior

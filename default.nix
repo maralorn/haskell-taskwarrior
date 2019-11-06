@@ -12,8 +12,6 @@ in {
       hlint
       cabal-install
       brittany
-      haskell-ci
-      shake
       pkgs.coreutils
     ];
   };
