@@ -31,11 +31,11 @@ jobs:
          cabal new-update
          cabal new-build --only-dependencies
          cabal new-install hlint --installdir=.
-#    - name: Build
-#      run: cabal new-build
-#    - name: Run tests
-#      run: cabal new-test
-#    - name: Run haddock
-#      run: cabal new-haddock
-#    - name: Run hlint
-#      run: ./hlint src
+    - name: Build
+      run: cabal new-build
+    - name: Run tests
+      run: cabal new-test
+    - name: Run haddock
+      run: cabal new-haddock
+    - name: Run hlint
+      run: ./hlint src
