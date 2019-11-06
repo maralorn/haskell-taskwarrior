@@ -16,20 +16,21 @@ jobs:
       with:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
-      #    - name: Cache node modules
-      #uses: actions/cache@v1
-      #with:
-      #  path: node_modules
-      #  key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
-      #  restore-keys: |
-      #    ${{ runner.OS }}-build-${{ env.cache-name }}-
-      #    ${{ runner.OS }}-build-
-      #    ${{ runner.OS }}-
+    - name: Cache cabal
+      uses: actions/cache@v1
+      with:
+        path: ~/.cabal
+        key: ${{ runner.OS }}-build-${{ hashFiles('**/*.cabal') }}
+        restore-keys: |
+          ${{ runner.OS }}-build-${{ env.cache-name }}-
+          ${{ runner.OS }}-build-
+          ${{ runner.OS }}-
 
     - name: Prepare cabal
       run: |
          cabal new-update
          cabal new-build --only-dependencies
+         cabal new-install hlint
     - name: list
       run: ls -al
     - name: Build
@@ -38,3 +39,5 @@ jobs:
       run: cabal new-test
     - name: Run haddock
       run: cabal new-haddock
+    - name: Run hlint
+      run: hlint
