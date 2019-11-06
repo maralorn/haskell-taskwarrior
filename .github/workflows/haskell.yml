@@ -1,6 +1,6 @@
 name: Haskell CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -29,8 +29,10 @@ jobs:
          cabal new-update
          cabal new-build --only-dependencies
          cabal new-install hlint ormolu --installdir=.
-    - name: Build
-      run: cabal new-build
+    - name: Try build with warnings
+      run: |
+         cabal new-configure --ghc-option -Werror
+         cabal new-build
     - name: Run tests
       run: cabal new-test
     - name: Run haddock
