@@ -31,8 +31,6 @@ jobs:
          cabal new-update
          cabal new-build --only-dependencies
          cabal new-install hlint
-    - name: list
-      run: ls -al
     - name: Build
       run: cabal new-build --ghc-option -Werror
     - name: Run tests
