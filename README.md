@@ -12,7 +12,7 @@ This Haskell library contains
 
 ## Usage
 
-Install `taskwarrior` via hackage.
+Install `taskwarrior` from hackage. Have a look at `Taskwarrior.IO.getTasks` to get started.
 
 ## Contributions
 
