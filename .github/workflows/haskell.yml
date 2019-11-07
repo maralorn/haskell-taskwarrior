@@ -10,6 +10,7 @@ jobs:
       matrix:
         ghc: [ '8.6.5', '8.8.1' ]
         cabal: [ '3.0' ]
+        command: [ 'cabal new-test', 'cabal new-haddock', './hlint src' ]
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-haskell@v1
@@ -24,21 +25,14 @@ jobs:
         restore-keys: |
           ghc-${{ matrix.ghc }}-cabal-${{ matrix.cabal }}-build
 
-    - name: Prepare with cabal
+    - name: Prepare cabal
       run: |
          cabal new-update
          cabal new-build --only-dependencies
          #         cabal new-install hlint ormolu --installdir=.
          cabal new-install hlint --installdir=.
-    - name: Try build with warnings
-      run: |
          cabal new-configure --ghc-option -Werror
-         cabal new-build
-    - name: Run tests
-      run: cabal new-test
-    - name: Run haddock
-      run: cabal new-haddock
-    - name: Run hlint
-      run: ./hlint src
+    - name: Run ${{ matrix.command }}
+      run: ${{ matrix.command }}
       #    - name: Check formatting
       #run: ./ormolu -m check src/**/*.hs
