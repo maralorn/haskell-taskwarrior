@@ -37,6 +37,7 @@ import           Foreign.Marshal.Utils          ( fromBool )
 
 type Tag = Text
 
+-- | A Task represents task from taskwarrior. See <https://taskwarrior.org/docs/design/task.html> for the specification of the fields.
 data Task = Task {
         status      :: Status,
         uuid        :: UUID,
