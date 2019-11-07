@@ -1,4 +1,8 @@
-# taskwarrior [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fmaralorn%2Fhaskell-taskwarrior%2Fbadge%3Fref%3Dmaster&style=flat-square)](https://actions-badge.atrox.dev/maralorn/haskell-taskwarrior/goto?ref=master)
+# taskwarrior
+
+[![Hackage](https://img.shields.io/hackage/v/taskwarrior.svg)](https://hackage.haskell.org/package/taskwarrior)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fmaralorn%2Fhaskell-taskwarrior%2Fbadge%3Fref%3Dmaster)](https://actions-badge.atrox.dev/maralorn/haskell-taskwarrior/goto?ref=master)
+[![Hackage Deps](https://img.shields.io/hackage-deps/v/taskwarrior.svg)](http://packdeps.haskellers.com/reverse/taskwarrior) 
 
 ## About
 
