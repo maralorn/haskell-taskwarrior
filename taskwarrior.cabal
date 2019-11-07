@@ -25,7 +25,6 @@ library
   ghc-options:        -Wall
   exposed-modules:
     Taskwarrior.Annotation
-    Taskwarrior.Duration
     Taskwarrior.IO
     Taskwarrior.Mask
     Taskwarrior.Priority

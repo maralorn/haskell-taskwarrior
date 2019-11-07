@@ -1,3 +1,5 @@
+-- | This Module exports the main datatype of this library: Task.
+-- It is provided with FromJSON and ToJSON instances.
 module Taskwarrior.Task
   ( Task(..)
   )
@@ -38,6 +40,10 @@ import           Foreign.Marshal.Utils          ( fromBool )
 type Tag = Text
 
 -- | A Task represents task from taskwarrior. See <https://taskwarrior.org/docs/design/task.html> for the specification of the fields.
+-- The specification demands, that the existence of some fields is dependent on the status of the task.
+-- Those fields are therefore bundled in status as a sum-type.
+--
+-- All fields in an imported task which are not part of the specification will be put in the UDA (user defined attributes) HashMap.
 data Task = Task {
         status      :: Status,
         uuid        :: UUID,
