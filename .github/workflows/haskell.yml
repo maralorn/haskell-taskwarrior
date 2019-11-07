@@ -31,7 +31,7 @@ jobs:
          cabal new-build --only-dependencies
          #         cabal new-install hlint ormolu --installdir=.
          cabal new-install hlint --installdir=.
-         cabal new-configure --ghc-option -Werror
+         sed -i "s/-Wall/-Wall -Werror/" taskwarrior.cabal
     - name: Run ${{ matrix.command }}
       run: ${{ matrix.command }}
       #    - name: Check formatting
