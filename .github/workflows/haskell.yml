@@ -37,6 +37,7 @@ jobs:
       run: ./hlint src
     - name: Build documentation
       run: |
-         ! cabal new-haddock | grep "Missing documentation" -B1
+         cabal new-haddock
+         ! cabal new-haddock | grep "Missing documentation" -B1 > /dev/null
       #    - name: Check formatting
       #run: ./ormolu -m check src/**/*.hs
