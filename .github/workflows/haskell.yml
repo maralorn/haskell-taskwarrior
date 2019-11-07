@@ -33,11 +33,9 @@ jobs:
       run: cabal new-build
     - name: Test
       run: cabal new-test
-    - name: Build documentation
-      run: |
-         cabal new-haddock
-         ! cabal new-haddock | grep "Missing documentation" -B1
     - name: Run hlint
       run: ./hlint src
+    - name: Build documentation
+      run: ! cabal new-haddock | grep "Missing documentation" -B1
       #    - name: Check formatting
       #run: ./ormolu -m check src/**/*.hs
