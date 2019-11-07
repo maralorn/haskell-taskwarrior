@@ -1,4 +1,5 @@
 {-# LANGUAGE RecordWildCards, ScopedTypeVariables #-}
+-- |
 module Taskwarrior.Annotation
   ( Annotation(..)
   )
@@ -12,6 +13,7 @@ import           Data.Aeson                     ( (.:)
                                                 )
 import qualified Data.Aeson                    as Aeson
 
+-- |
 data Annotation = Annotation { entry :: UTCTime, description :: Text } deriving (Eq, Show, Read, Ord)
 
 instance Aeson.FromJSON Annotation where

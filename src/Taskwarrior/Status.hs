@@ -1,4 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
+-- | This module deals with information of a task which is dependent on the status.
 module Taskwarrior.Status
   ( Status(..)
   , parseFromObject
@@ -21,7 +22,9 @@ import           Data.Aeson.Types               ( Parser
                                                 , typeMismatch
                                                 , Pair
                                                 )
-
+-- | A task can be pending, deleted, completed, waiting or recurring.
+-- If I task is a recurring child or a recurring parent depends on the existence of the corresponding fields and can not be told from the status field alone.
+-- It is recommended to access the fields only by pattern matching, since the getters are partial.
 data Status =
   Pending |
   Deleted {  end :: UTCTime } |
@@ -38,6 +41,7 @@ data Status =
 
 parseFromObject, parseParentFromObject, parseChildFromObject
   :: Object -> Parser Status
+-- | Takes all information that is dependent on the status from a json object.
 parseFromObject o = (o .: "status") >>= \case
   "pending"   -> pure Pending
   "deleted"   -> Deleted <$> (o .: "end" >>= Time.parse)
@@ -46,11 +50,14 @@ parseFromObject o = (o .: "status") >>= \case
   "recurring" -> parseParentFromObject o <|> parseChildFromObject o
   str         -> typeMismatch "status" (Aeson.String str)
 
+-- | Gathers all fields for a RecurringChild status.
 parseChildFromObject o =
   RecurringChild <$> o .: "recur" <*> o .: "imask" <*> o .: "parent"
 
+-- | Gathers all fields for a RecurringParent status.
 parseParentFromObject o = RecurringParent <$> o .: "recur" <*> o .: "mask"
 
+-- | A list of Pairs can be used to construct a JSON object later. The result of Status.toPairs is supposed to be combined with the rest of the fields of a task.
 toPairs :: Status -> [Pair]
 toPairs = \case
   Pending        -> [statusLabel "pending"]

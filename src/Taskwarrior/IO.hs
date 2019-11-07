@@ -1,3 +1,6 @@
+-- | This modules contains IO actions to interact with the taskwarrior application.
+-- The taskwarrior documentation very explicitly disallows accessing the files by itself.
+-- So all functions here work via calling the `task` binary which needs to be in the PATH.
 module Taskwarrior.IO
   ( getTasks
   , saveTasks
@@ -19,6 +22,7 @@ import           System.IO                      ( hClose )
 import           System.Exit                    ( ExitCode(..) )
 import           Control.Monad                  ( when )
 
+-- | Uses task export with a given filter like ["description:Milk", "+PENDING"].
 getTasks :: [Text] -> IO [Task]
 getTasks args =
   withCreateProcess
@@ -34,6 +38,7 @@ getTasks args =
         input <- LBS.hGetContents stdout
         either fail return . Aeson.eitherDecode $ input
 
+-- | Uses task import to save the given tasks.
 saveTasks :: [Task] -> IO ()
 saveTasks tasks =
   withCreateProcess ((proc "task" ["import"]) { std_in = CreatePipe })

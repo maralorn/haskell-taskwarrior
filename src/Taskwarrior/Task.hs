@@ -44,6 +44,9 @@ type Tag = Text
 -- Those fields are therefore bundled in status as a sum-type.
 --
 -- All fields in an imported task which are not part of the specification will be put in the UDA (user defined attributes) HashMap.
+--
+-- Since the json can have multiple semantically equivalent representation of a task first serializing and then deserializing is not identity.
+-- But deserializing and then serializing should be. (Thus making serializing and deserializing idempotent.)
 data Task = Task {
         status      :: Status,
         uuid        :: UUID,
