@@ -2,7 +2,7 @@
 
 [![Hackage](https://img.shields.io/hackage/v/taskwarrior.svg)](https://hackage.haskell.org/package/taskwarrior)
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fmaralorn%2Fhaskell-taskwarrior%2Fbadge%3Fref%3Dmaster)](https://actions-badge.atrox.dev/maralorn/haskell-taskwarrior/goto?ref=master)
-[![Hackage Deps](https://img.shields.io/hackage-deps/v/taskwarrior.svg)](http://packdeps.haskellers.com/reverse/taskwarrior) 
+[![Hackage Deps](https://img.shields.io/hackage-deps/v/taskwarrior.svg)](http://packdeps.haskellers.com/reverse/taskwarrior)
 
 ## About
 
@@ -23,7 +23,7 @@ This example prints the description of (at the most) 5 pending tasks.
 import Taskwarrior.IO (getTasks)
 import Taskwarrior.Task as Task
 
-main :: IO
+main :: IO ()
 main = do
   tasks <- getTasks ["+PENDING", "limit:5"]
   print $ Task.description <$> tasks
