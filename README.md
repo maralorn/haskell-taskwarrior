@@ -18,6 +18,17 @@ This Haskell library contains
 
 Install `taskwarrior` from hackage. Have a look at `Taskwarrior.IO.getTasks` to get started.
 
+This example prints the description of (at the most) 5 pending tasks.
+```haskell
+import Taskwarrior.IO (getTasks)
+import Taskwarrior.Task as Task
+
+main :: IO
+main = do
+  tasks <- getTasks ["+PENDING", "limit:5"]
+  print $ Task.description <$> tasks
+```
+
 ## Contributions
 
 Any form of issue reports, general feedback or suggestions and of course code contributions are highly welcome.
