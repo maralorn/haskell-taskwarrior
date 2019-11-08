@@ -5,9 +5,9 @@ name:               taskwarrior
 --                  | | +----- non-breaking API additions
 --                  | | | +--- code changes with no API change
 version:            0.1.0.0
-synopsis:           Types and Aeson instances for Taskwarrior Tasks
+synopsis:           Types and aeson instances for taskwarrior tasks
 description:
-  Types and Aeson instances for the https://taskwarrior.org task import/export feature
+  Types and aeson instances for the https://taskwarrior.org task import/export feature
 
 homepage:           https://github.com/maralorn/haskell-taskwarrior
 bug-reports:        https://github.com/maralorn/haskell-taskwarrior/issues
