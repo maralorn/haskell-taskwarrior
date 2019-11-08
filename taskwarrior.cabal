@@ -15,7 +15,7 @@ license:            AGPL-3.0-or-later
 license-file:       LICENSE
 author:             Malte Brandy
 maintainer:         malte.brandy@maralorn.de
-category:           taskwarrior, data, aeson
+category:           Taskwarrior, Data, Aeson
 extra-source-files:
   CHANGELOG.md
   README.md
