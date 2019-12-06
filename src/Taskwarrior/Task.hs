@@ -1,8 +1,10 @@
+{-# LANGUAGE NamedFieldPuns #-}
 -- | This Module exports the main datatype of this library: Task.
 -- It is provided with FromJSON and ToJSON instances.
 module Taskwarrior.Task
   ( Task(..)
   , Tag
+  , makeTask
   )
 where
 
@@ -153,3 +155,22 @@ ifNotNullList :: [b] -> ([b] -> a) -> [a]
 ifNotNullList list f =
   (Semigroup.stimesMonoid . (fromBool :: Bool -> Integer) . not . null $ list)
     [f list]
+
+-- | Makes a Task with the given mandatory fields uuid, entry time and description. See createTask for a non-pure version which needs less parameters.
+makeTask :: UUID -> UTCTime -> Text -> Task
+makeTask uuid entry description = Task { uuid
+                                       , description
+                                       , entry
+                                       , modified    = Just entry
+                                       , status      = Status.Pending
+                                       , due         = Nothing
+                                       , priority    = Nothing
+                                       , project     = Nothing
+                                       , start       = Nothing
+                                       , scheduled   = Nothing
+                                       , until       = Nothing
+                                       , annotations = []
+                                       , depends     = []
+                                       , tags        = []
+                                       , uda         = HashMap.empty
+                                       }

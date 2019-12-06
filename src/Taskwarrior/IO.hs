@@ -4,10 +4,13 @@
 module Taskwarrior.IO
   ( getTasks
   , saveTasks
+  , createTask
   )
 where
 
-import           Taskwarrior.Task               ( Task )
+import           Taskwarrior.Task               ( Task
+                                                , makeTask
+                                                )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as Text
 import qualified Data.ByteString.Lazy          as LBS
@@ -21,6 +24,10 @@ import           System.Process                 ( withCreateProcess
 import           System.IO                      ( hClose )
 import           System.Exit                    ( ExitCode(..) )
 import           Control.Monad                  ( when )
+import           System.Random                  ( getStdRandom
+                                                , random
+                                                )
+import           Data.Time                      ( getCurrentTime )
 
 -- | Uses task export with a given filter like ["description:Milk", "+PENDING"].
 getTasks :: [Text] -> IO [Task]
@@ -50,3 +57,15 @@ saveTasks tasks =
         hClose stdin
         exitCode <- waitForProcess process
         when (exitCode /= ExitSuccess) $ fail . show $ exitCode
+
+-- | This will create a Task. I runs in IO to create a UUID and get the currentTime. This will not save the Task to taskwarrior.
+-- If you want to create a task, with certain fields and save it, you could do that like this:
+-- @
+--   newTask <- createTask "Buy Milk"
+--   saveTasks [newTask { tags = ["groceries"] }]
+-- @
+createTask :: Text -> IO Task
+createTask description = do
+  uuid  <- getStdRandom random
+  entry <- getCurrentTime
+  pure $ makeTask uuid entry description

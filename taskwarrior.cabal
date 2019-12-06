@@ -43,6 +43,7 @@ library
     , base                  >=4.11     && <4.14
     , bytestring            ^>=0.10.8.2
     , process               ^>=1.6.5.0
+    , random                ^>=1.1
     , string-interpolate    ^>=0.1.0.1
     , text                  ^>=1.2.3.1
     , time                  >=1.8.0.2  && <1.10
