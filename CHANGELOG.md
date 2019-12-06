@@ -1,5 +1,9 @@
 # Revision history for taskwarrior
 
-## 0.1.0.0 -- YYYY-mm-dd
+## 0.1.1.0 -- 2019-12-06
 
-* First version. Released on an unsuspecting world.
+* Added `makeTask` and `createTask` functions.
+
+## 0.1.0.0 -- 2019-11-08
+
+* First version. Includes the data types, `saveTasks` and `getTasks`.
