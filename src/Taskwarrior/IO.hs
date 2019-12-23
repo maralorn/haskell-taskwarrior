@@ -5,6 +5,7 @@ module Taskwarrior.IO
   ( getTasks
   , saveTasks
   , createTask
+  , getUUIDs
   )
 where
 
@@ -14,6 +15,7 @@ import           Taskwarrior.Task               ( Task
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as Text
 import qualified Data.ByteString.Lazy          as LBS
+import qualified Data.ByteString.Lazy.Char8    as LBS
 import qualified Data.Aeson                    as Aeson
 import           System.Process                 ( withCreateProcess
                                                 , CreateProcess(..)
@@ -28,6 +30,8 @@ import           System.Random                  ( getStdRandom
                                                 , random
                                                 )
 import           Data.Time                      ( getCurrentTime )
+import           Data.UUID                      ( UUID )
+import qualified Data.UUID                     as UUID
 
 -- | Uses task export with a given filter like ["description:Milk", "+PENDING"].
 getTasks :: [Text] -> IO [Task]
@@ -44,6 +48,24 @@ getTasks args =
           stdoutMay
         input <- LBS.hGetContents stdout
         either fail return . Aeson.eitherDecode $ input
+
+-- | Gives all uuids matching the given filter (e.g. `["description:Milk", "+PENDING"]`). This calls the `task` binary.
+getUUIDs :: [Text] -> IO [UUID]
+getUUIDs args =
+  withCreateProcess
+      ((proc "task" (fmap Text.unpack . (++ ["_uuid"]) $ args)) { std_out = CreatePipe
+                                                                }
+      )
+    $ \_ stdoutMay _ _ -> do
+        stdout <- maybe
+          (fail "Couldn‘t create stdout handle for `task _uuid`")
+          pure
+          stdoutMay
+        input <- LBS.hGetContents stdout
+        maybe (fail "Couldn't parse UUIDs") return
+          . traverse UUID.fromLazyASCIIBytes
+          . LBS.lines
+          $ input
 
 -- | Uses task import to save the given tasks.
 saveTasks :: [Task] -> IO ()
