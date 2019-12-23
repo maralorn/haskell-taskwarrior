@@ -1,5 +1,9 @@
 # Revision history for taskwarrior
 
+## 0.1.2.0 -- 2019-12-23
+
+* Added `getUUIDs` function.
+
 ## 0.1.1.0 -- 2019-12-06
 
 * Added `makeTask` and `createTask` functions.
