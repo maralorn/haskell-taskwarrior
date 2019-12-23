@@ -33,7 +33,7 @@ import           Data.Time                      ( getCurrentTime )
 import           Data.UUID                      ( UUID )
 import qualified Data.UUID                     as UUID
 
--- | Uses task export with a given filter like ["description:Milk", "+PENDING"].
+-- | Uses `task export` with a given filter like `["description:Milk", "+PENDING"]`.
 getTasks :: [Text] -> IO [Task]
 getTasks args =
   withCreateProcess
