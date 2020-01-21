@@ -1,5 +1,5 @@
-{-# LANGUAGE LambdaCase, QuasiQuotes #-}
--- | The Mask module models the state a recurring parent saves about it‘s child tasks.
+{-# LANGUAGE LambdaCase #-}
+-- | The Mask module models the state a recurring parent saves about its child tasks.
 module Taskwarrior.Mask
   ( Mask(..)
   , MaskState
@@ -7,7 +7,6 @@ module Taskwarrior.Mask
 where
 
 import qualified Data.Text                     as Text
-import           Data.String.Interpolate        ( i )
 import qualified Data.Aeson                    as Aeson
 import qualified Data.Aeson.Types              as Aeson.Types
 
@@ -34,7 +33,7 @@ parseChar = \case
   '+'  -> pure Completed
   'X'  -> pure Deleted
   'W'  -> pure Waiting
-  char -> fail [i|Not a Mask Char: '#{char}'|]
+  char -> fail $ "Not a Mask Char: '"++[char]++"'"
 
 instance Aeson.ToJSON Mask where
   toJSON = Aeson.String . Text.pack . fmap toChar . mask
