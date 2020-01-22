@@ -1,5 +1,9 @@
 # Revision history for taskwarrior
 
+## 0.1.2.1
+
+* Remove string-interpolate dependency
+
 ## 0.1.2.0 -- 2019-12-23
 
 * Added `getUUIDs` function.
