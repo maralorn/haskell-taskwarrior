@@ -3,6 +3,7 @@
 ## 0.1.2.3
 
 * Documentation improvements
+* Loosen some dependency bounds
 
 ## 0.1.2.2
 
