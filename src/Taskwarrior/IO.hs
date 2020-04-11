@@ -33,7 +33,7 @@ import           Data.Time                      ( getCurrentTime )
 import           Data.UUID                      ( UUID )
 import qualified Data.UUID                     as UUID
 
--- | Uses `task export` with a given filter like `["description:Milk", "+PENDING"]`.
+-- | Uses @task export@ with a given filter like @["description:Milk", "+PENDING"]@.
 getTasks :: [Text] -> IO [Task]
 getTasks args =
   withCreateProcess
@@ -49,7 +49,7 @@ getTasks args =
         input <- LBS.hGetContents stdout
         either fail return . Aeson.eitherDecode $ input
 
--- | Gives all uuids matching the given filter (e.g. `["description:Milk", "+PENDING"]`). This calls the `task` binary.
+-- | Gives all uuids matching the given filter (e.g. @["description:Milk", "+PENDING"]@). This calls the @task@ binary.
 getUUIDs :: [Text] -> IO [UUID]
 getUUIDs args =
   withCreateProcess
@@ -67,7 +67,7 @@ getUUIDs args =
           . LBS.lines
           $ input
 
--- | Uses task import to save the given tasks.
+-- | Uses @task import@ to save the given tasks.
 saveTasks :: [Task] -> IO ()
 saveTasks tasks =
   withCreateProcess ((proc "task" ["import"]) { std_in = CreatePipe })
@@ -80,11 +80,11 @@ saveTasks tasks =
         exitCode <- waitForProcess process
         when (exitCode /= ExitSuccess) $ fail . show $ exitCode
 
--- | This will create a Task. I runs in IO to create a UUID and get the currentTime. This will not save the Task to taskwarrior.
+-- | This will create a @'Task'@. I runs in @'IO'@ to create a @'UUID'@ and get the current time. This will not save the @'Task'@ to taskwarrior.
 -- If you want to create a task, with certain fields and save it, you could do that like this:
 --
--- > newTask <- createTask "Buy Milk"
--- > saveTasks [newTask { tags = ["groceries"] }]
+-- > newTask <- 'createTask' "Buy Milk"
+-- > 'saveTasks' [newTask { 'tags' = ["groceries"] }]
 createTask :: Text -> IO Task
 createTask description = do
   uuid  <- getStdRandom random

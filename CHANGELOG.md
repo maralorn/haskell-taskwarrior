@@ -1,5 +1,9 @@
 # Revision history for taskwarrior
 
+## 0.1.2.3
+
+* Documentation improvements
+
 ## 0.1.2.2
 
 * Add `StrictData` pragma for better performance.
