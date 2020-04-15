@@ -81,10 +81,10 @@ saveTasks tasks =
         when (exitCode /= ExitSuccess) $ fail . show $ exitCode
 
 -- | This will create a @'Task'@. I runs in @'IO'@ to create a @'UUID'@ and get the current time. This will not save the @'Task'@ to taskwarrior.
--- If you want to create a task, with certain fields and save it, you could do that like this:
+-- If you want to create a task with certain fields and save it you could do that like this:
 --
--- > newTask <- 'createTask' "Buy Milk"
--- > 'saveTasks' [newTask { 'tags' = ["groceries"] }]
+-- > newTask <- createTask "Buy Milk"
+-- > saveTasks [newTask { tags = ["groceries"] }]
 createTask :: Text -> IO Task
 createTask description = do
   uuid  <- getStdRandom random
