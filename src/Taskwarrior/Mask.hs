@@ -30,6 +30,7 @@ instance Aeson.FromJSON Mask where
 parseChar :: Char -> Aeson.Types.Parser MaskState
 parseChar = \case
   '.'  -> pure Pending
+  '-'  -> pure Pending
   '+'  -> pure Completed
   'X'  -> pure Deleted
   'W'  -> pure Waiting
