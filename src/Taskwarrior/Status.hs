@@ -12,6 +12,11 @@ import qualified Taskwarrior.Time              as Time
 import           Data.Aeson                     ( Object
                                                 , (.:)
                                                 , (.=)
+                                                , ToJSON
+                                                , FromJSON
+                                                , pairs
+                                                , object
+                                                , withObject
                                                 )
 import qualified Data.Aeson                    as Aeson
 import           Control.Applicative            ( (<|>) )
@@ -75,3 +80,10 @@ toPairs = \case
  where
   statusLabel :: Text -> Pair
   statusLabel = ("status" .=)
+
+instance FromJSON Status where
+  parseJSON = withObject "Status" parseFromObject
+
+instance ToJSON Status where
+  toJSON = object . toPairs
+  toEncoding = pairs . mconcat . map (uncurry (.=)) . toPairs
