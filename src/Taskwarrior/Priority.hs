@@ -23,3 +23,8 @@ parseMay = Aeson.withText "Priority" $ \case
   "L" -> pure $ Just Low
   "" -> pure Nothing
   s -> fail $ "parsing Priority failed, unexpected " ++ show s ++ " (expected \"H\", \"M\", \"L\", or \"\")"
+
+instance Aeson.FromJSON Priority where
+   parseJSON val = parseMay val >>= \case
+     Nothing -> fail "parsing Priority failed, unexpected null (expected \"H\", \"M\", or \"L\")"
+     Just p -> pure p
