@@ -1,5 +1,5 @@
 -- | This module provides the type for the priority of a task.
-module Taskwarrior.Priority (parseMay, Priority) where
+module Taskwarrior.Priority (parseMay, Priority(..)) where
 
 import qualified Data.Aeson                    as Aeson
 import           Data.Aeson.Types               ( Parser, typeMismatch )
