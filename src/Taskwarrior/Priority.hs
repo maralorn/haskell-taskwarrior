@@ -2,7 +2,7 @@
 module Taskwarrior.Priority (parseMay, Priority) where
 
 import qualified Data.Aeson                    as Aeson
-import           Data.Aeson.Types               ( Parser, typeMismatch )
+import           Data.Aeson.Types               ( Parser )
 
 
 -- | A task can have the priorities high, medium, low or none, which is modeled via a Maybe Priority.
@@ -17,9 +17,9 @@ instance Aeson.ToJSON Priority where
 
 -- | Parses a JSON string to a Maybe Priority, fails on anything else.
 parseMay :: Aeson.Value -> Parser (Maybe Priority)
-parseMay val = Aeson.withText "Priority" (\case
+parseMay = Aeson.withText "Priority" $ \case
   "H" -> pure $ Just High
   "M" -> pure $ Just Medium
   "L" -> pure $ Just Low
   "" -> pure Nothing
-  _ -> typeMismatch "Priority" val) val
+  s -> fail $ "parsing Priority failed, unexpected " ++ show s ++ " (expected \"H\", \"M\", \"L\", or \"\")"
