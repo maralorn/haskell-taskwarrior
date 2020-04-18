@@ -1,5 +1,10 @@
 # Revision history for taskwarrior
 
+## 0.1.2.4
+
+* Fix a bug where recurring masks where parsed wrong
+* Further (small) documentation improvementes
+
 ## 0.1.2.3
 
 * Documentation improvements
