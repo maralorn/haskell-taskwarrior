@@ -4,6 +4,8 @@ module TaskSpec
   )
 where
 
+import           Prelude hiding ( id )
+
 import           Test.Hspec
 import           Test.QuickCheck
 import           Data.Aeson
@@ -72,6 +74,7 @@ instance Arbitrary Task where
       RecurringParent {} -> pure Nothing -- A task cannot be both a parent and child recurrence
       _ -> arbitrary
     uuid           <- arbitrary
+    id             <- arbitrary `suchThat` (maybe True (>= 1)) -- IDs can't be negative, and 0 is used as "not present"
     entry          <- arbitrary
     description    <- arbitrary
     start          <- arbitrary
@@ -84,5 +87,6 @@ instance Arbitrary Task where
     priority       <- arbitrary
     depends        <- arbitrary
     tags           <- arbitrary
+    urgency        <- arbitrary
     uda <- HashMap.fromList . fmap (\(x, y) -> (x, String y)) <$> arbitrary
     pure Task { until = until_, .. }

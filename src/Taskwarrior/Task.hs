@@ -8,6 +8,8 @@ module Taskwarrior.Task
   )
 where
 
+import           Prelude hiding ( id )
+
 import qualified Data.Text                     as Text
 import           Data.Text                      ( Text )
 import           Data.Time                      ( UTCTime )
@@ -26,6 +28,7 @@ import           Data.Aeson                     ( withObject
                                                 , Value
                                                 )
 import qualified Data.Semigroup                as Semigroup
+import           Data.Maybe                     ( fromMaybe )
 import qualified Data.Maybe                    as Maybe
 import           Control.Monad                  ( join )
 import qualified Data.Foldable                 as Foldable
@@ -53,6 +56,7 @@ data Task = Task {
         status         :: Status,
         recurringChild :: Maybe RecurringChild,
         uuid           :: UUID,
+        id             :: Maybe Integer,
         entry          :: UTCTime,
         description    :: Text,
         start          :: Maybe UTCTime,
@@ -65,6 +69,7 @@ data Task = Task {
         priority       :: Maybe Priority,
         depends        :: [UUID],
         tags           :: [Tag],
+        urgency        :: Double,
         uda            :: UDA
 } deriving (Eq, Show, Read)
 
@@ -76,6 +81,7 @@ reservedKeys :: [Text]
 reservedKeys =
   [ "status"
   , "uuid"
+  , "id"
   , "description"
   , "entry"
   , "modified"
@@ -94,6 +100,7 @@ reservedKeys =
   , "imask"
   , "parent"
   , "recur"
+  , "urgency"
   ]
 
 instance FromJSON Task where
@@ -103,6 +110,8 @@ instance FromJSON Task where
     status         <- Status.parseFromObject object
     recurringChild <- RecurringChild.parseFromObjectMay object
     uuid           <- object .: "uuid"
+    idRaw          <- object .: "id"
+    let id = if idRaw == 0 then Nothing else Just idRaw
     entry          <- object .: "entry" >>= Time.parse
     description    <- object .: "description"
     start          <- parseTimeFromFieldMay "start"
@@ -116,6 +125,7 @@ instance FromJSON Task where
       <$> parseFromFieldWithMay Priority.parseMay object "priority"
     depends <- maybe (pure []) parseUuidList (HashMap.lookup "depends" object)
     tags    <- Foldable.fold <$> object .:? "tags"
+    urgency <- object .: "urgency"
     pure Task { until = until_, .. }
 
 parseFromFieldWithMay
@@ -135,8 +145,10 @@ instance ToJSON Task where
     Aeson.object
       $  Status.toPairs status
       <> [ "uuid" .= uuid
+         , "id" .= fromMaybe 0 id
          , "entry" .= Time.toValue entry
          , "description" .= description
+         , "urgency" .= urgency
          ]
       <> maybe [] RecurringChild.toPairs recurringChild
       <> ifNotNullList annotations ("annotations" .=)
@@ -166,6 +178,7 @@ makeTask :: UUID -> UTCTime -> Text -> Task
 makeTask uuid entry description = Task { uuid
                                        , description
                                        , entry
+                                       , id             = Nothing
                                        , modified       = Just entry
                                        , status         = Status.Pending
                                        , recurringChild = Nothing
@@ -178,5 +191,6 @@ makeTask uuid entry description = Task { uuid
                                        , annotations    = []
                                        , depends        = []
                                        , tags           = []
+                                       , urgency        = 0
                                        , uda            = HashMap.empty
                                        }
