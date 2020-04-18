@@ -18,7 +18,7 @@ newtype Mask = Mask {mask :: [MaskState]} deriving (Eq, Read, Ord, Show)
 
 toChar :: MaskState -> Char
 toChar = \case
-  Pending   -> '.'
+  Pending   -> '-'
   Completed -> '+'
   Deleted   -> 'X'
   Waiting   -> 'W'
@@ -29,7 +29,7 @@ instance Aeson.FromJSON Mask where
 
 parseChar :: Char -> Aeson.Types.Parser MaskState
 parseChar = \case
-  '.'  -> pure Pending
+  '-'  -> pure Pending
   '+'  -> pure Completed
   'X'  -> pure Deleted
   'W'  -> pure Waiting

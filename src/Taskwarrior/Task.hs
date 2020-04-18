@@ -65,7 +65,7 @@ data Task = Task {
         uda         :: UDA
 } deriving (Eq, Show, Read)
 
--- | A Tag can be basically any string. But beware: Special symbols work but might clash with `task` cli syntax.
+-- | A Tag can be basically any string. But beware: Special symbols work but might clash with `task` cli syntax. As an example you can use a space in a @'Tag'@. But then you cannot use @task +my tag@ on the command line.
 type Tag = Text
 
 

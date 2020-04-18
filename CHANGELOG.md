@@ -1,5 +1,23 @@
 # Revision history for taskwarrior
 
+## 0.1.2.4
+
+* Fix a bug where recurring masks where parsed wrong
+* Further (small) documentation improvementes
+
+## 0.1.2.3
+
+* Documentation improvements
+* Loosen some dependency bounds
+
+## 0.1.2.2
+
+* Add `StrictData` pragma for better performance.
+
+## 0.1.2.1
+
+* Remove string-interpolate dependency
+
 ## 0.1.2.0 -- 2019-12-23
 
 * Added `getUUIDs` function.
