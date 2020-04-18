@@ -31,6 +31,8 @@ import           Control.Monad                  ( join )
 import qualified Data.Foldable                 as Foldable
 import           Taskwarrior.Status             ( Status )
 import qualified Taskwarrior.Status            as Status
+import           Taskwarrior.RecurringChild     ( RecurringChild )
+import qualified Taskwarrior.RecurringChild    as RecurringChild
 import           Taskwarrior.Priority           ( Priority )
 import qualified Taskwarrior.Priority          as Priority
 import           Taskwarrior.UDA                ( UDA )
@@ -48,21 +50,22 @@ import           Foreign.Marshal.Utils          ( fromBool )
 -- Since the json can have multiple semantically equivalent representations of a task first serializing and then deserializing is not identity.
 -- But deserializing and then serializing should be. (Thus making serializing and deserializing idempotent.)
 data Task = Task {
-        status      :: Status,
-        uuid        :: UUID,
-        entry       :: UTCTime,
-        description :: Text,
-        start       :: Maybe UTCTime,
-        modified    :: Maybe UTCTime,
-        due         :: Maybe UTCTime,
-        until       :: Maybe UTCTime,
-        annotations :: [Annotation],
-        scheduled   :: Maybe UTCTime,
-        project     :: Maybe Text,
-        priority    :: Maybe Priority,
-        depends     :: [UUID],
-        tags        :: [Tag],
-        uda         :: UDA
+        status         :: Status,
+        recurringChild :: Maybe RecurringChild,
+        uuid           :: UUID,
+        entry          :: UTCTime,
+        description    :: Text,
+        start          :: Maybe UTCTime,
+        modified       :: Maybe UTCTime,
+        due            :: Maybe UTCTime,
+        until          :: Maybe UTCTime,
+        annotations    :: [Annotation],
+        scheduled      :: Maybe UTCTime,
+        project        :: Maybe Text,
+        priority       :: Maybe Priority,
+        depends        :: [UUID],
+        tags           :: [Tag],
+        uda            :: UDA
 } deriving (Eq, Show, Read)
 
 -- | A Tag can be basically any string. But beware: Special symbols work but might clash with `task` cli syntax. As an example you can use a space in a @'Tag'@. But then you cannot use @task +my tag@ on the command line.
@@ -97,18 +100,19 @@ instance FromJSON Task where
   parseJSON = withObject "Task" $ \object -> do
     let parseTimeFromFieldMay = parseFromFieldWithMay Time.parse object
         uda = HashMap.filterWithKey (\k _ -> k `notElem` reservedKeys) object
-    status      <- Status.parseFromObject object
-    uuid        <- object .: "uuid"
-    entry       <- object .: "entry" >>= Time.parse
-    description <- object .: "description"
-    start       <- parseTimeFromFieldMay "start"
-    modified    <- parseTimeFromFieldMay "modified"
-    due         <- parseTimeFromFieldMay "due"
-    until_      <- parseTimeFromFieldMay "until"
-    scheduled   <- parseTimeFromFieldMay "scheduled"
-    annotations <- Foldable.fold <$> object .:? "annotations"
-    project     <- object .:? "project"
-    priority    <- join
+    status         <- Status.parseFromObject object
+    recurringChild <- RecurringChild.parseFromObjectMay object
+    uuid           <- object .: "uuid"
+    entry          <- object .: "entry" >>= Time.parse
+    description    <- object .: "description"
+    start          <- parseTimeFromFieldMay "start"
+    modified       <- parseTimeFromFieldMay "modified"
+    due            <- parseTimeFromFieldMay "due"
+    until_         <- parseTimeFromFieldMay "until"
+    scheduled      <- parseTimeFromFieldMay "scheduled"
+    annotations    <- Foldable.fold <$> object .:? "annotations"
+    project        <- object .:? "project"
+    priority       <- join
       <$> parseFromFieldWithMay Priority.parseMay object "priority"
     depends <- maybe (pure []) parseUuidList (HashMap.lookup "depends" object)
     tags    <- Foldable.fold <$> object .:? "tags"
@@ -134,6 +138,7 @@ instance ToJSON Task where
          , "entry" .= Time.toValue entry
          , "description" .= description
          ]
+      <> maybe [] RecurringChild.toPairs recurringChild
       <> ifNotNullList annotations ("annotations" .=)
       <> Maybe.mapMaybe
            (\(name, value) -> (name .=) . Time.toValue <$> value)
@@ -161,16 +166,17 @@ makeTask :: UUID -> UTCTime -> Text -> Task
 makeTask uuid entry description = Task { uuid
                                        , description
                                        , entry
-                                       , modified    = Just entry
-                                       , status      = Status.Pending
-                                       , due         = Nothing
-                                       , priority    = Nothing
-                                       , project     = Nothing
-                                       , start       = Nothing
-                                       , scheduled   = Nothing
-                                       , until       = Nothing
-                                       , annotations = []
-                                       , depends     = []
-                                       , tags        = []
-                                       , uda         = HashMap.empty
+                                       , modified       = Just entry
+                                       , status         = Status.Pending
+                                       , recurringChild = Nothing
+                                       , due            = Nothing
+                                       , priority       = Nothing
+                                       , project        = Nothing
+                                       , start          = Nothing
+                                       , scheduled      = Nothing
+                                       , until          = Nothing
+                                       , annotations    = []
+                                       , depends        = []
+                                       , tags           = []
+                                       , uda            = HashMap.empty
                                        }

@@ -27,6 +27,7 @@ library
     Taskwarrior.IO
     Taskwarrior.Mask
     Taskwarrior.Priority
+    Taskwarrior.RecurringChild
     Taskwarrior.Status
     Taskwarrior.Task
     Taskwarrior.Time
