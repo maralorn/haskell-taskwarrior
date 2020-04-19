@@ -40,5 +40,5 @@ The tests on github will check for hlints, missing docs and unapplied formatting
 
 ## Help & Contact
 
-You can always open an issue on GitHub. You can also ask in `#haskell-taskwarrior` on freenode irc. If you don‘t have an irc client you can log in via [the webchat](https://webchat.freenode.net/#haskell-taskwarrior)
-Shooting @maralorn a mail is also an option. But of course that wont be public and therefore not help anyone else.
+You can always open an issue on GitHub. You can also ask in `#haskell-taskwarrior` on freenode irc. If you don‘t have an irc client you can log in via [the webchat](https://webchat.freenode.net/#haskell-taskwarrior).
+Shooting @maralorn a mail is also an option. But of course that won’t be public and therefore not help anyone else.
