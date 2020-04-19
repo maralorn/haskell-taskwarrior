@@ -1,4 +1,4 @@
--- | User defined attributes are stored in a HashMap from Text to json Values because we have no type information about them.
+-- | User defined attributes are stored in a 'HashMap' from 'Text' to json 'Value's because we have no type information about them.
 module Taskwarrior.UDA
   ( UDA
   )

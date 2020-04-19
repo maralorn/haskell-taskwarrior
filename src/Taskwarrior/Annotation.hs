@@ -1,4 +1,4 @@
--- |
+-- | Provides the 'Annotation' type with 'ToJSON' and 'FromJSON' instances.
 module Taskwarrior.Annotation
   ( Annotation(..)
   )
@@ -12,7 +12,7 @@ import           Data.Aeson                     ( (.:)
                                                 )
 import qualified Data.Aeson                    as Aeson
 
--- |
+-- | A taskwarrior 'Task' can have multiple annotations. They contain a timestamp 'entry' and a 'descrption'.
 data Annotation = Annotation { entry :: UTCTime, description :: Text } deriving (Eq, Show, Read, Ord)
 
 instance Aeson.FromJSON Annotation where

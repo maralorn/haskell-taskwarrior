@@ -26,7 +26,6 @@ import           Data.Aeson.Types               ( Parser
                                                 )
 
 -- | A task can be pending, deleted, completed, waiting or recurring.
--- If I task is a recurring child or a recurring parent depends on the existence of the corresponding fields and can not be told from the status field alone.
 -- It is recommended to access the fields only by pattern matching since the getters are partial.
 data Status =
   Pending |
