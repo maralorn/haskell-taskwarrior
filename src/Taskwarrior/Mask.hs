@@ -33,7 +33,7 @@ parseChar = \case
   '+'  -> pure Completed
   'X'  -> pure Deleted
   'W'  -> pure Waiting
-  char -> fail $ "Not a Mask Char: '"++[char]++"'"
+  char -> fail $ "Not a Mask Char: '" ++ [char] ++ "'"
 
 instance Aeson.ToJSON Mask where
   toJSON = Aeson.String . Text.pack . fmap toChar . mask

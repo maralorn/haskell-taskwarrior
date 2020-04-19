@@ -39,14 +39,11 @@ parseFromObject o =
 
 toPairs :: RecurringChild -> [Pair]
 toPairs (RecurringChild {..}) =
-  [ "recur" .= recur
-  , "imask" .= imask
-  , "parent" .= parent
-  ]
+  ["recur" .= recur, "imask" .= imask, "parent" .= parent]
 
 instance FromJSON RecurringChild where
   parseJSON = withObject "RecurringChild" parseFromObject
 
 instance ToJSON RecurringChild where
-  toJSON = object . toPairs
+  toJSON     = object . toPairs
   toEncoding = pairs . mconcat . map (uncurry (.=)) . toPairs

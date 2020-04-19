@@ -8,7 +8,7 @@ module Taskwarrior.Task
   )
 where
 
-import           Prelude hiding ( id )
+import           Prelude                 hiding ( id )
 
 import qualified Data.Text                     as Text
 import           Data.Text                      ( Text )
@@ -112,16 +112,16 @@ instance FromJSON Task where
     uuid           <- object .: "uuid"
     idRaw          <- object .: "id"
     let id = if idRaw == 0 then Nothing else Just idRaw
-    entry          <- object .: "entry" >>= Time.parse
-    description    <- object .: "description"
-    start          <- parseTimeFromFieldMay "start"
-    modified       <- parseTimeFromFieldMay "modified"
-    due            <- parseTimeFromFieldMay "due"
-    until_         <- parseTimeFromFieldMay "until"
-    scheduled      <- parseTimeFromFieldMay "scheduled"
-    annotations    <- Foldable.fold <$> object .:? "annotations"
-    project        <- object .:? "project"
-    priority       <- join
+    entry       <- object .: "entry" >>= Time.parse
+    description <- object .: "description"
+    start       <- parseTimeFromFieldMay "start"
+    modified    <- parseTimeFromFieldMay "modified"
+    due         <- parseTimeFromFieldMay "due"
+    until_      <- parseTimeFromFieldMay "until"
+    scheduled   <- parseTimeFromFieldMay "scheduled"
+    annotations <- Foldable.fold <$> object .:? "annotations"
+    project     <- object .:? "project"
+    priority    <- join
       <$> parseFromFieldWithMay Priority.parseMay object "priority"
     depends <- maybe (pure []) parseUuidList (HashMap.lookup "depends" object)
     tags    <- Foldable.fold <$> object .:? "tags"

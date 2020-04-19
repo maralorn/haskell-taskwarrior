@@ -66,5 +66,5 @@ instance FromJSON Status where
   parseJSON = withObject "Status" parseFromObject
 
 instance ToJSON Status where
-  toJSON = object . toPairs
+  toJSON     = object . toPairs
   toEncoding = pairs . mconcat . map (uncurry (.=)) . toPairs
