@@ -34,6 +34,7 @@ library
 
   default-extensions:
     LambdaCase
+    NamedFieldPuns
     OverloadedStrings
     RecordWildCards
     StrictData

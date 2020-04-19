@@ -1,4 +1,3 @@
-{-# LANGUAGE NamedFieldPuns #-}
 -- | This Module exports the main datatype of this library: Task.
 -- It is provided with FromJSON and ToJSON instances.
 module Taskwarrior.Task
