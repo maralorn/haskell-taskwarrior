@@ -7,6 +7,8 @@ module Taskwarrior.Task
   )
 where
 
+import           Prelude                 hiding ( id )
+
 import qualified Data.Text                     as Text
 import           Data.Text                      ( Text )
 import           Data.Time                      ( UTCTime )
@@ -25,11 +27,14 @@ import           Data.Aeson                     ( withObject
                                                 , Value
                                                 )
 import qualified Data.Semigroup                as Semigroup
+import           Data.Maybe                     ( fromMaybe )
 import qualified Data.Maybe                    as Maybe
 import           Control.Monad                  ( join )
 import qualified Data.Foldable                 as Foldable
 import           Taskwarrior.Status             ( Status )
 import qualified Taskwarrior.Status            as Status
+import           Taskwarrior.RecurringChild     ( RecurringChild )
+import qualified Taskwarrior.RecurringChild    as RecurringChild
 import           Taskwarrior.Priority           ( Priority )
 import qualified Taskwarrior.Priority          as Priority
 import           Taskwarrior.UDA                ( UDA )
@@ -47,21 +52,24 @@ import           Foreign.Marshal.Utils          ( fromBool )
 -- Since the json can have multiple semantically equivalent representations of a task first serializing and then deserializing is not identity.
 -- But deserializing and then serializing should be. (Thus making serializing and deserializing idempotent.)
 data Task = Task {
-        status      :: Status,
-        uuid        :: UUID,
-        entry       :: UTCTime,
-        description :: Text,
-        start       :: Maybe UTCTime,
-        modified    :: Maybe UTCTime,
-        due         :: Maybe UTCTime,
-        until       :: Maybe UTCTime,
-        annotations :: [Annotation],
-        scheduled   :: Maybe UTCTime,
-        project     :: Maybe Text,
-        priority    :: Maybe Priority,
-        depends     :: [UUID],
-        tags        :: [Tag],
-        uda         :: UDA
+        status         :: Status,
+        recurringChild :: Maybe RecurringChild,
+        uuid           :: UUID,
+        id             :: Maybe Integer,
+        entry          :: UTCTime,
+        description    :: Text,
+        start          :: Maybe UTCTime,
+        modified       :: Maybe UTCTime,
+        due            :: Maybe UTCTime,
+        until          :: Maybe UTCTime,
+        annotations    :: [Annotation],
+        scheduled      :: Maybe UTCTime,
+        project        :: Maybe Text,
+        priority       :: Maybe Priority,
+        depends        :: [UUID],
+        tags           :: [Tag],
+        urgency        :: Double,
+        uda            :: UDA
 } deriving (Eq, Show, Read)
 
 -- | A Tag can be basically any string. But beware: Special symbols work but might clash with `task` cli syntax. As an example you can use a space in a @'Tag'@. But then you cannot use @task +my tag@ on the command line.
@@ -72,6 +80,7 @@ reservedKeys :: [Text]
 reservedKeys =
   [ "status"
   , "uuid"
+  , "id"
   , "description"
   , "entry"
   , "modified"
@@ -90,14 +99,18 @@ reservedKeys =
   , "imask"
   , "parent"
   , "recur"
+  , "urgency"
   ]
 
 instance FromJSON Task where
   parseJSON = withObject "Task" $ \object -> do
     let parseTimeFromFieldMay = parseFromFieldWithMay Time.parse object
         uda = HashMap.filterWithKey (\k _ -> k `notElem` reservedKeys) object
-    status      <- Status.parseFromObject object
-    uuid        <- object .: "uuid"
+    status         <- Status.parseFromObject object
+    recurringChild <- RecurringChild.parseFromObjectMay object
+    uuid           <- object .: "uuid"
+    idRaw          <- object .: "id"
+    let id = if idRaw == 0 then Nothing else Just idRaw
     entry       <- object .: "entry" >>= Time.parse
     description <- object .: "description"
     start       <- parseTimeFromFieldMay "start"
@@ -111,6 +124,7 @@ instance FromJSON Task where
       <$> parseFromFieldWithMay Priority.parseMay object "priority"
     depends <- maybe (pure []) parseUuidList (HashMap.lookup "depends" object)
     tags    <- Foldable.fold <$> object .:? "tags"
+    urgency <- object .: "urgency"
     pure Task { until = until_, .. }
 
 parseFromFieldWithMay
@@ -130,9 +144,12 @@ instance ToJSON Task where
     Aeson.object
       $  Status.toPairs status
       <> [ "uuid" .= uuid
+         , "id" .= fromMaybe 0 id
          , "entry" .= Time.toValue entry
          , "description" .= description
+         , "urgency" .= urgency
          ]
+      <> maybe [] RecurringChild.toPairs recurringChild
       <> ifNotNullList annotations ("annotations" .=)
       <> Maybe.mapMaybe
            (\(name, value) -> (name .=) . Time.toValue <$> value)
@@ -160,16 +177,19 @@ makeTask :: UUID -> UTCTime -> Text -> Task
 makeTask uuid entry description = Task { uuid
                                        , description
                                        , entry
-                                       , modified    = Just entry
-                                       , status      = Status.Pending
-                                       , due         = Nothing
-                                       , priority    = Nothing
-                                       , project     = Nothing
-                                       , start       = Nothing
-                                       , scheduled   = Nothing
-                                       , until       = Nothing
-                                       , annotations = []
-                                       , depends     = []
-                                       , tags        = []
-                                       , uda         = HashMap.empty
+                                       , id             = Nothing
+                                       , modified       = Just entry
+                                       , status         = Status.Pending
+                                       , recurringChild = Nothing
+                                       , due            = Nothing
+                                       , priority       = Nothing
+                                       , project        = Nothing
+                                       , start          = Nothing
+                                       , scheduled      = Nothing
+                                       , until          = Nothing
+                                       , annotations    = []
+                                       , depends        = []
+                                       , tags           = []
+                                       , urgency        = 0
+                                       , uda            = HashMap.empty
                                        }

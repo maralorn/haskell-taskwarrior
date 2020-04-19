@@ -11,16 +11,20 @@ import qualified Taskwarrior.Time              as Time
 import           Data.Aeson                     ( Object
                                                 , (.:)
                                                 , (.=)
+                                                , ToJSON
+                                                , FromJSON
+                                                , pairs
+                                                , object
+                                                , withObject
                                                 )
 import qualified Data.Aeson                    as Aeson
-import           Control.Applicative            ( (<|>) )
 import           Data.Text                      ( Text )
 import           Data.Time                      ( UTCTime )
-import           Data.UUID                      ( UUID )
 import           Data.Aeson.Types               ( Parser
                                                 , typeMismatch
                                                 , Pair
                                                 )
+
 -- | A task can be pending, deleted, completed, waiting or recurring.
 -- If I task is a recurring child or a recurring parent depends on the existence of the corresponding fields and can not be told from the status field alone.
 -- It is recommended to access the fields only by pattern matching since the getters are partial.
@@ -31,30 +35,18 @@ data Status =
   Waiting { wait :: UTCTime } |
   RecurringParent {
     recur :: Text,
-    mask :: Mask} |
-  RecurringChild {
-    recur :: Text,
-    imask :: Integer,
-    parent :: UUID }
+    mask :: Mask}
   deriving (Eq, Show, Read, Ord)
 
-parseFromObject, parseParentFromObject, parseChildFromObject
-  :: Object -> Parser Status
 -- | Takes all information that is dependent on the status from a JSON object.
+parseFromObject :: Object -> Parser Status
 parseFromObject o = (o .: "status") >>= \case
   "pending"   -> pure Pending
   "deleted"   -> Deleted <$> (o .: "end" >>= Time.parse)
   "completed" -> Completed <$> (o .: "end" >>= Time.parse)
   "waiting"   -> Waiting <$> (o .: "wait" >>= Time.parse)
-  "recurring" -> parseParentFromObject o <|> parseChildFromObject o
+  "recurring" -> RecurringParent <$> o .: "recur" <*> o .: "mask"
   str         -> typeMismatch "status" (Aeson.String str)
-
--- | Gathers all fields for a RecurringChild status.
-parseChildFromObject o =
-  RecurringChild <$> o .: "recur" <*> o .: "imask" <*> o .: "parent"
-
--- | Gathers all fields for a RecurringParent status.
-parseParentFromObject o = RecurringParent <$> o .: "recur" <*> o .: "mask"
 
 -- | A list of Pairs can be used to construct a JSON object later. The result of Status.toPairs is supposed to be combined with the rest of the fields of a task.
 toPairs :: Status -> [Pair]
@@ -65,12 +57,13 @@ toPairs = \case
   Waiting {..}   -> [statusLabel "waiting", "wait" .= Time.toValue wait]
   RecurringParent {..} ->
     [statusLabel "recurring", "recur" .= recur, "mask" .= mask]
-  RecurringChild {..} ->
-    [ statusLabel "recurring"
-    , "recur" .= recur
-    , "imask" .= imask
-    , "parent" .= parent
-    ]
  where
   statusLabel :: Text -> Pair
   statusLabel = ("status" .=)
+
+instance FromJSON Status where
+  parseJSON = withObject "Status" parseFromObject
+
+instance ToJSON Status where
+  toJSON     = object . toPairs
+  toEncoding = pairs . mconcat . map (uncurry (.=)) . toPairs

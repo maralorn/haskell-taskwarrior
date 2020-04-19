@@ -4,12 +4,16 @@ module TaskSpec
   )
 where
 
+import           Prelude                 hiding ( id )
+import           Control.Arrow                  ( second )
+
 import           Test.Hspec
 import           Test.QuickCheck
 import           Data.Aeson
 import           Taskwarrior.Task
 import           Taskwarrior.Mask
 import           Taskwarrior.Status
+import           Taskwarrior.RecurringChild
 import           Taskwarrior.Annotation
 import           Taskwarrior.Priority
 import           Data.Time
@@ -18,7 +22,6 @@ import           Test.QuickCheck.Instances.Text ( )
 import           Test.QuickCheck.Instances.UUID ( )
 import           Test.QuickCheck.Instances.UnorderedContainers
                                                 ( )
-
 
 prop_taskDeEncode :: Task -> Property
 prop_taskDeEncode task = Just task === decode (encode task)
@@ -45,8 +48,10 @@ instance Arbitrary Status where
     , Completed <$> arbitrary
     , Waiting <$> arbitrary
     , RecurringParent <$> arbitrary <*> arbitrary
-    , RecurringChild <$> arbitrary <*> arbitrary <*> arbitrary
     ]
+
+instance Arbitrary RecurringChild where
+  arbitrary = RecurringChild <$> arbitrary <*> arbitrary <*> arbitrary
 
 instance Arbitrary UTCTime where
   arbitrary = do
@@ -65,8 +70,12 @@ instance Arbitrary Priority where
 
 instance Arbitrary Task where
   arbitrary = do
-    status      <- arbitrary
+    status         <- arbitrary
+    recurringChild <- case status of
+      RecurringParent{} -> pure Nothing -- A task cannot be both a parent and child recurrence
+      _                 -> arbitrary
     uuid        <- arbitrary
+    id          <- arbitrary `suchThat` maybe True (>= 1) -- IDs can't be negative, and 0 is used as "not present"
     entry       <- arbitrary
     description <- arbitrary
     start       <- arbitrary
@@ -79,5 +88,6 @@ instance Arbitrary Task where
     priority    <- arbitrary
     depends     <- arbitrary
     tags        <- arbitrary
-    uda <- HashMap.fromList . fmap (\(x, y) -> (x, String y)) <$> arbitrary
+    urgency     <- arbitrary
+    uda         <- HashMap.fromList . fmap (second String) <$> arbitrary
     pure Task { until = until_, .. }
