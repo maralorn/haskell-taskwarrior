@@ -1,9 +1,19 @@
 -- | This Module exports the main datatype of this library: Task.
 -- It is provided with FromJSON and ToJSON instances.
+--
 module Taskwarrior.Task
   ( Task(..)
   , Tag
   , makeTask
+  -- | == Adherence to specification
+  -- This library uses the [taskwarrior specification for the JSON serialisation format](https://taskwarrior.org/docs/design/task.html).
+  -- But it deviates in a small number of ways to be more pragmatic.
+  --
+  -- * 'Task' has the fields 'id' and 'urgency' although they are technically UDAs.
+  -- * There are two invalid states which are not prevented via the Haskell type system by the chosen modeling:
+  --
+  --   1. A 'Task' with a 'Just' value for 'recurringChild' should not have the 'Status' 'Taskwarrior.Status.Recurring'.
+  --   2. The 'due' field needs to be a 'Just' value on a 'Task' with 'Status' 'Taskwarrior.Status.Recurring'.
   )
 where
 
