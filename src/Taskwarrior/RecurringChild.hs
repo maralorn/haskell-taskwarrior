@@ -38,7 +38,7 @@ parseFromObject o =
   RecurringChild <$> o .: "recur" <*> o .: "imask" <*> o .: "parent"
 
 toPairs :: RecurringChild -> [Pair]
-toPairs (RecurringChild {..}) =
+toPairs RecurringChild {..} =
   ["recur" .= recur, "imask" .= imask, "parent" .= parent]
 
 instance FromJSON RecurringChild where
