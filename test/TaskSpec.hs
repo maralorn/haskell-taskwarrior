@@ -4,7 +4,8 @@ module TaskSpec
   )
 where
 
-import           Prelude hiding ( id )
+import           Prelude                 hiding ( id )
+import           Control.Arrow                  ( second )
 
 import           Test.Hspec
 import           Test.QuickCheck
@@ -71,22 +72,22 @@ instance Arbitrary Task where
   arbitrary = do
     status         <- arbitrary
     recurringChild <- case status of
-      RecurringParent {} -> pure Nothing -- A task cannot be both a parent and child recurrence
-      _ -> arbitrary
-    uuid           <- arbitrary
-    id             <- arbitrary `suchThat` (maybe True (>= 1)) -- IDs can't be negative, and 0 is used as "not present"
-    entry          <- arbitrary
-    description    <- arbitrary
-    start          <- arbitrary
-    modified       <- arbitrary
-    due            <- arbitrary
-    until_         <- arbitrary
-    annotations    <- arbitrary
-    scheduled      <- arbitrary
-    project        <- arbitrary
-    priority       <- arbitrary
-    depends        <- arbitrary
-    tags           <- arbitrary
-    urgency        <- arbitrary
-    uda <- HashMap.fromList . fmap (\(x, y) -> (x, String y)) <$> arbitrary
+      RecurringParent{} -> pure Nothing -- A task cannot be both a parent and child recurrence
+      _                 -> arbitrary
+    uuid        <- arbitrary
+    id          <- arbitrary `suchThat` maybe True (>= 1) -- IDs can't be negative, and 0 is used as "not present"
+    entry       <- arbitrary
+    description <- arbitrary
+    start       <- arbitrary
+    modified    <- arbitrary
+    due         <- arbitrary
+    until_      <- arbitrary
+    annotations <- arbitrary
+    scheduled   <- arbitrary
+    project     <- arbitrary
+    priority    <- arbitrary
+    depends     <- arbitrary
+    tags        <- arbitrary
+    urgency     <- arbitrary
+    uda         <- HashMap.fromList . fmap (second String) <$> arbitrary
     pure Task { until = until_, .. }
