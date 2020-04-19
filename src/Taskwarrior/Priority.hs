@@ -1,7 +1,7 @@
 -- | This module provides the type for the priority of a task.
 module Taskwarrior.Priority
   ( parseMay
-  , Priority
+  , Priority(..)
   )
 where
 

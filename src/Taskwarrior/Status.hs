@@ -1,4 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
 -- | This module deals with information of a task which is dependent on the status.
 module Taskwarrior.Status
   ( Status(..)

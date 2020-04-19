@@ -1,4 +1,3 @@
-{-# LANGUAGE RecordWildCards, ScopedTypeVariables #-}
 -- |
 module Taskwarrior.Annotation
   ( Annotation(..)

@@ -1,0 +1,4 @@
+conf_forward:
+  options_ghc:
+  - -XLambdaCase
+  - -XRecordWildCards

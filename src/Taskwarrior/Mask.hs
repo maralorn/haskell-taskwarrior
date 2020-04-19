@@ -1,4 +1,3 @@
-{-# LANGUAGE LambdaCase #-}
 -- | The Mask module models the state a recurring parent saves about its child tasks.
 module Taskwarrior.Mask
   ( Mask(..)
