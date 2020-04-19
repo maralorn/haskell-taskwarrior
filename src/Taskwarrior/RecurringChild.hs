@@ -1,3 +1,5 @@
+-- | This Module provides the RecurringChild type with
+-- FromJSON and ToJSON instances.
 module Taskwarrior.RecurringChild
   ( RecurringChild(..)
   , parseFromObjectMay
@@ -22,6 +24,8 @@ import           Data.Aeson.Types               ( Parser
 import           Data.Text                      ( Text )
 import           Data.UUID                      ( UUID )
 
+-- | The 'RecurringChild' type saves information about how a 'Task'
+-- is child of another 'Task' wich is recurring.
 data RecurringChild =
   RecurringChild {
   recur :: Text,
@@ -29,7 +33,7 @@ data RecurringChild =
   parent :: UUID }
   deriving (Eq, Show, Read, Ord)
 
--- | Gathers all fields for a RecurringChild status.
+-- | Gathers all fields for a 'RecurringChild' status.
 parseFromObjectMay :: Object -> Parser (Maybe RecurringChild)
 parseFromObjectMay = optional . parseFromObject
 
@@ -37,6 +41,7 @@ parseFromObject :: Object -> Parser RecurringChild
 parseFromObject o =
   RecurringChild <$> o .: "recur" <*> o .: "imask" <*> o .: "parent"
 
+-- | Can be used to serialize 'RecurringChild' to JSON.
 toPairs :: RecurringChild -> [Pair]
 toPairs RecurringChild {..} =
   ["recur" .= recur, "imask" .= imask, "parent" .= parent]
