@@ -9,10 +9,10 @@ import qualified Data.Text                     as Text
 import qualified Data.Aeson                    as Aeson
 import qualified Data.Aeson.Types              as Aeson.Types
 
--- | Represents the state of a child in a recurring task.
+-- | Represents the state of a child in a 'Status.Recurring' 'Task.Task'.
 data MaskState = Pending | Completed | Deleted | Waiting deriving (Eq, Show, Enum, Read, Ord, Bounded)
 
--- | The mask is a newtype to provide Aeson instances from and to a JSON string.
+-- | The mask is a newtype to provide 'Data.Aeson' instances from and to a JSON string.
 newtype Mask = Mask {mask :: [MaskState]} deriving (Eq, Read, Ord, Show)
 
 toChar :: MaskState -> Char

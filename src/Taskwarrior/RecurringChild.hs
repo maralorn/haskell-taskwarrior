@@ -24,8 +24,8 @@ import           Data.Aeson.Types               ( Parser
 import           Data.Text                      ( Text )
 import           Data.UUID                      ( UUID )
 
--- | The 'RecurringChild' type saves information about how a 'Task'
--- is child of another 'Task' wich is recurring.
+-- | The 'RecurringChild' type saves information about how a 'Taskwarrior.Task.Task'
+-- is child of another 'Taskwarrior.Task.Task' wich is recurring.
 data RecurringChild =
   RecurringChild {
   recur :: Text,

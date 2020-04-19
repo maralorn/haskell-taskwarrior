@@ -9,7 +9,7 @@ import qualified Data.Aeson                    as Aeson
 import           Data.Aeson.Types               ( Parser )
 
 
--- | A 'Task' can have the priorities 'High', 'Medium', 'Low' or none, which is modeled via a 'Maybe' 'Priority'.
+-- | A 'Taskwarrior.Task.Task' can have the priorities 'High', 'Medium', 'Low' or none, which is modeled via a 'Maybe' 'Priority'.
 data Priority = High | Medium | Low
         deriving (Eq, Show, Read, Enum, Ord, Bounded)
 

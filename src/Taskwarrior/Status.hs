@@ -47,7 +47,7 @@ parseFromObject o = (o .: "status") >>= \case
   "recurring" -> RecurringParent <$> o .: "recur" <*> o .: "mask"
   str         -> typeMismatch "status" (Aeson.String str)
 
--- | A list of Pairs can be used to construct a JSON object later. The result of Status.toPairs is supposed to be combined with the rest of the fields of a task.
+-- | A list of Pairs can be used to construct a JSON object later. The result of 'toPairs' is supposed to be combined with the rest of the fields of a task.
 toPairs :: Status -> [Pair]
 toPairs = \case
   Pending        -> [statusLabel "pending"]

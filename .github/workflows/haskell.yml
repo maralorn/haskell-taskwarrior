@@ -36,6 +36,7 @@ jobs:
       run: |
          cabal new-haddock
          ! cabal new-haddock | grep "Missing documentation" -B1 > /dev/null
+         ! cabal new-haddock | grep "is out of scope" -B1 > /dev/null
     - name: Run hlint
       run: ./hlint src
     - name: Check formatting

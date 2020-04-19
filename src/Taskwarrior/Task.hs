@@ -43,11 +43,11 @@ import qualified Taskwarrior.Time              as Time
 import qualified Data.HashMap.Strict           as HashMap
 import           Foreign.Marshal.Utils          ( fromBool )
 
--- | A Task represents a task from taskwarrior. See <https://taskwarrior.org/docs/design/task.html> for the specification of the fields.
+-- | A 'Task' represents a task from taskwarrior.
 -- The specification demands, that the existence of some fields is dependent on the status of the task.
--- Those fields are therefore bundled in status as a sum-type.
+-- Those fields are therefore bundled in 'Status' as a sum-type.
 --
--- All fields in an imported task which are not part of the specification will be put in the UDA (user defined attributes) HashMap.
+-- All fields in an imported task which are not part of the specification will be put in the 'UDA' (user defined attributes) 'Data.HashMap.Strict.HashMap'.
 --
 -- Since the json can have multiple semantically equivalent representations of a task first serializing and then deserializing is not identity.
 -- But deserializing and then serializing should be. (Thus making serializing and deserializing idempotent.)
@@ -72,7 +72,7 @@ data Task = Task {
         uda            :: UDA
 } deriving (Eq, Show, Read)
 
--- | A Tag can be basically any string. But beware: Special symbols work but might clash with `task` cli syntax. As an example you can use a space in a @'Tag'@. But then you cannot use @task +my tag@ on the command line.
+-- | A Tag can be basically any string. But beware: Special symbols work but might clash with @task@ cli syntax. As an example you can use a space in a @'Tag'@. But then you cannot use @task +my tag@ on the command line.
 type Tag = Text
 
 

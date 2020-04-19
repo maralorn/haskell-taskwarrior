@@ -1,6 +1,6 @@
 -- | This modules contains IO actions to interact with the taskwarrior application.
 -- The taskwarrior documentation very explicitly disallows accessing the files by itself.
--- So all functions here work via calling the `task` binary which needs to be in the PATH.
+-- So all functions here work via calling the @task@ binary which needs to be in the PATH.
 module Taskwarrior.IO
   ( getTasks
   , saveTasks
@@ -85,7 +85,7 @@ saveTasks tasks =
 --
 -- @
 -- newTask <- 'createTask' "Buy Milk"
--- 'saveTasks' [newTask { 'tags' = ["groceries"] }]
+-- 'saveTasks' [newTask { 'Taskwarrior.Task.tags' = ["groceries"] }]
 -- @
 createTask :: Text -> IO Task
 createTask description = do
