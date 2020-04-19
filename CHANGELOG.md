@@ -26,7 +26,7 @@
 
 ### Thanks
 
-Thanks to @ryantrinkle and @tom-audm for their contributions.
+Thanks to @ryantrinkle and @tom-audm for their contributions, which triggered this release.
 
 ## 0.1.2.4
 
