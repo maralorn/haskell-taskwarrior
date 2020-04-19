@@ -4,7 +4,7 @@ name:               taskwarrior
 -- PVP summary:     +-+------- breaking API changes
 --                  | | +----- non-breaking API additions
 --                  | | | +--- code changes with no API change
-version: 0.1.2.4
+version:            0.1.2.4
 synopsis:           Types and aeson instances for taskwarrior tasks
 description:
   Types and aeson instances for the https://taskwarrior.org task import/export feature
@@ -19,6 +19,10 @@ category:           Taskwarrior, Data
 extra-source-files:
   CHANGELOG.md
   README.md
+
+source-repository head
+  type:     git
+  location: git://github.com/maralorn/haskell-taskwarrior.git
 
 library
   ghc-options:        -Wall
