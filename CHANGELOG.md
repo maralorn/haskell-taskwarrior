@@ -4,7 +4,7 @@
 
 ### Breaking changes
 
-* data Status: Removed RecurringChild, renamed RecurringParent to Recurring.
+* Status: Removed RecurringChild, renamed RecurringParent to Recurring.
 
 ### Other API changes
 
