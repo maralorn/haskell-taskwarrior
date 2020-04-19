@@ -47,7 +47,7 @@ instance Arbitrary Status where
     , Deleted <$> arbitrary
     , Completed <$> arbitrary
     , Waiting <$> arbitrary
-    , RecurringParent <$> arbitrary <*> arbitrary
+    , Recurring <$> arbitrary <*> arbitrary
     ]
 
 instance Arbitrary RecurringChild where
@@ -72,8 +72,8 @@ instance Arbitrary Task where
   arbitrary = do
     status         <- arbitrary
     recurringChild <- case status of
-      RecurringParent{} -> pure Nothing -- A task cannot be both a parent and child recurrence
-      _                 -> arbitrary
+      Recurring{} -> pure Nothing -- A task cannot be both a parent and child recurrence
+      _           -> arbitrary
     uuid        <- arbitrary
     id          <- arbitrary `suchThat` maybe True (>= 1) -- IDs can't be negative, and 0 is used as "not present"
     entry       <- arbitrary

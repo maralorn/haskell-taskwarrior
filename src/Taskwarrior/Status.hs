@@ -32,7 +32,7 @@ data Status =
   Deleted {  end :: UTCTime } |
   Completed {  end :: UTCTime } |
   Waiting { wait :: UTCTime } |
-  RecurringParent {
+  Recurring {
     recur :: Text,
     mask :: Mask}
   deriving (Eq, Show, Read, Ord)
@@ -44,7 +44,7 @@ parseFromObject o = (o .: "status") >>= \case
   "deleted"   -> Deleted <$> (o .: "end" >>= Time.parse)
   "completed" -> Completed <$> (o .: "end" >>= Time.parse)
   "waiting"   -> Waiting <$> (o .: "wait" >>= Time.parse)
-  "recurring" -> RecurringParent <$> o .: "recur" <*> o .: "mask"
+  "recurring" -> Recurring <$> o .: "recur" <*> o .: "mask"
   str         -> typeMismatch "status" (Aeson.String str)
 
 -- | A list of Pairs can be used to construct a JSON object later. The result of 'toPairs' is supposed to be combined with the rest of the fields of a task.
@@ -54,8 +54,7 @@ toPairs = \case
   Deleted {..}   -> [statusLabel "deleted", "end" .= Time.toValue end]
   Completed {..} -> [statusLabel "completed", "end" .= Time.toValue end]
   Waiting {..}   -> [statusLabel "waiting", "wait" .= Time.toValue wait]
-  RecurringParent {..} ->
-    [statusLabel "recurring", "recur" .= recur, "mask" .= mask]
+  Recurring {..} -> [statusLabel "recurring", "recur" .= recur, "mask" .= mask]
  where
   statusLabel :: Text -> Pair
   statusLabel = ("status" .=)
