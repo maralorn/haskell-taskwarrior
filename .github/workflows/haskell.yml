@@ -26,18 +26,17 @@ jobs:
       run: |
          cabal new-update
          cabal new-build --only-dependencies
-         #         cabal new-install hlint ormolu --installdir=.
-         cabal new-install hlint --installdir=.
+         cabal new-install hlint brittany --installdir=.
          sed -i "s/-Wall/-Wall -Werror/" taskwarrior.cabal
     - name: Build
       run: cabal new-build
     - name: Test
       run: cabal new-test
-    - name: Run hlint
-      run: ./hlint src
     - name: Build documentation
       run: |
          cabal new-haddock
          ! cabal new-haddock | grep "Missing documentation" -B1 > /dev/null
-      #    - name: Check formatting
-      #run: ./ormolu -m check src/**/*.hs
+    - name: Run hlint
+      run: ./hlint src
+    - name: Check formatting
+      run: ./brittany -c src/**/*.hs
