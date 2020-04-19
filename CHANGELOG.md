@@ -2,16 +2,14 @@
 
 ## 0.2.0.0
 
-### Most likely breaking changes
+### Breaking changes
 
-* data Status: Removed RecurringChild, renamed RecurringParent to Recurring. RecurringChild is now a Maybe field of Task.
-
-### Possibly breaking changes
-
-* Added the fields 'id' and 'urgency' to Task. They were regarded as UDAs before.
+* data Status: Removed RecurringChild, renamed RecurringParent to Recurring.
 
 ### Other API changes
 
+* RecurringChild is now a new Type and a Maybe field of Task.
+* Added the fields 'id' and 'urgency' to Task. They were regarded as UDAs before.
 * Now exporting the data consructors of Priority
 * Added To- and FromJSON for Status
 * Add FromJSON for Priority and improved Parser errors for it
