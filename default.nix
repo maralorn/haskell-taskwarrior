@@ -1,4 +1,4 @@
-{ pkgs ? import <unstable> { } }:
+{ pkgs ? import <nixpkgs> { } }:
 
 let
   haskellPackages = pkgs.haskellPackages;
