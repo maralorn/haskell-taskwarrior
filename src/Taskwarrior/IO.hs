@@ -6,6 +6,10 @@ module Taskwarrior.IO
   , saveTasks
   , createTask
   , getUUIDs
+  , onAdd
+  , onAddPure
+  , onModify
+  , onModifyPure
   )
 where
 
@@ -14,7 +18,9 @@ import           Taskwarrior.Task               ( Task
                                                 )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as Text
+import qualified Data.ByteString               as BS
 import qualified Data.ByteString.Lazy          as LBS
+                                         hiding ( putStrLn )
 import qualified Data.ByteString.Lazy.Char8    as LBS
 import qualified Data.Aeson                    as Aeson
 import           System.Process                 ( withCreateProcess
@@ -92,3 +98,31 @@ createTask description = do
   uuid  <- getStdRandom random
   entry <- getCurrentTime
   pure $ makeTask uuid entry description
+
+-- | Takes a function @f originalTask modifiedTask = taskToSave@.
+-- The resulting IO action can be run as the `main :: IO ()` of a taskwarrior on-modify hook.
+onModifyPure :: (Task -> Task -> Task) -> IO ()
+onModifyPure f = onModify (\x y -> pure (f x y))
+
+onModifyError :: String
+onModifyError = "OnModify hook couldn‘t parse task."
+
+-- | Like onModifyPure but with side effects.
+onModify :: (Task -> Task -> IO Task) -> IO ()
+onModify f = do
+  original <- readTaskLine onModifyError
+  modified <- readTaskLine onModifyError
+  LBS.putStrLn . Aeson.encode =<< f original modified
+
+readTaskLine :: String -> IO Task
+readTaskLine errorMsg =
+  maybe (fail errorMsg) pure =<< Aeson.decode' . LBS.fromStrict <$> BS.getLine
+
+-- | Like onModifyPure but for the onAdd hook.
+onAddPure :: (Task -> Task) -> IO ()
+onAddPure f = onAdd (pure . f)
+
+-- | Like onAddPure with side effects.
+onAdd :: (Task -> IO Task) -> IO ()
+onAdd f = LBS.putStrLn . Aeson.encode =<< f =<< readTaskLine
+  "OnAdd hook couldn‘t parse task."
