@@ -134,7 +134,7 @@ instance FromJSON Task where
       <$> parseFromFieldWithMay Priority.parseMay object "priority"
     depends <- maybe (pure []) parseUuidList (HashMap.lookup "depends" object)
     tags    <- Foldable.fold <$> object .:? "tags"
-    urgency <- maybe 0 (\x -> x) <$> object .:? "urgency"
+    urgency <- fromMaybe 0 <$> object .:? "urgency"
     pure Task { until = until_, .. }
 
 parseFromFieldWithMay
