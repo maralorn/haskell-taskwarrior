@@ -1,5 +1,10 @@
 # Revision history for taskwarrior
 
+## 0.2.1.0
+
+* Add helpers for onAdd and onModify hooks.
+* Fix a bug where JSON without an `id` ar `urgency` key would be wrongly rejected.
+
 ## 0.2.0.0
 
 ### Breaking changes
