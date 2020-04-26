@@ -119,8 +119,8 @@ instance FromJSON Task where
     status         <- Status.parseFromObject object
     recurringChild <- RecurringChild.parseFromObjectMay object
     uuid           <- object .: "uuid"
-    idRaw          <- object .: "id"
-    let id = if idRaw == 0 then Nothing else Just idRaw
+    idRaw          <- object .:? "id"
+    let id = if idRaw == Just 0 then Nothing else idRaw
     entry       <- object .: "entry" >>= Time.parse
     description <- object .: "description"
     start       <- parseTimeFromFieldMay "start"
@@ -134,7 +134,7 @@ instance FromJSON Task where
       <$> parseFromFieldWithMay Priority.parseMay object "priority"
     depends <- maybe (pure []) parseUuidList (HashMap.lookup "depends" object)
     tags    <- Foldable.fold <$> object .:? "tags"
-    urgency <- object .: "urgency"
+    urgency <- maybe 0 (\x -> x) <$> object .:? "urgency"
     pure Task { until = until_, .. }
 
 parseFromFieldWithMay
