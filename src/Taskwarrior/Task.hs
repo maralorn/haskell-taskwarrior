@@ -157,7 +157,7 @@ instance ToJSON Task where
          , "entry" .= Time.toValue entry
          , "description" .= description
          ]
-      <> (if urgency == 0 then [] else ["urgency" .= urgency])
+      <> [ "urgency" .= urgency | not (urgency == 0) ]
       <> maybe [] RecurringChild.toPairs recurringChild
       <> ifNotNullList annotations ("annotations" .=)
       <> Maybe.mapMaybe
