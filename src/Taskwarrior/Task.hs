@@ -154,11 +154,10 @@ instance ToJSON Task where
     Aeson.object
       $  Status.toPairs status
       <> [ "uuid" .= uuid
-         , "id" .= fromMaybe 0 id
          , "entry" .= Time.toValue entry
          , "description" .= description
-         , "urgency" .= urgency
          ]
+      <> (if urgency == 0 then [] else ["urgency" .= urgency])
       <> maybe [] RecurringChild.toPairs recurringChild
       <> ifNotNullList annotations ("annotations" .=)
       <> Maybe.mapMaybe
@@ -170,7 +169,10 @@ instance ToJSON Task where
            , ("until"    , until_)
            ]
       <> Maybe.catMaybes
-           [("project" .=) <$> project, ("priority" .=) <$> priority]
+           [ ("id" .=) <$> id
+           , ("project" .=) <$> project
+           , ("priority" .=) <$> priority
+           ]
       <> ifNotNullList
            depends
            (("depends" .=) . Text.intercalate "," . fmap UUID.toText)
