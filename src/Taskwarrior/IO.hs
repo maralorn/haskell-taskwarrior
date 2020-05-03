@@ -116,7 +116,7 @@ onModify f = do
 
 readTaskLine :: String -> IO Task
 readTaskLine errorMsg =
-  maybe (fail errorMsg) pure =<< Aeson.decode' . LBS.fromStrict <$> BS.getLine
+  maybe (fail errorMsg) pure . Aeson.decode' . LBS.fromStrict =<< BS.getLine
 
 -- | Like onModifyPure but for the onAdd hook.
 onAddPure :: (Task -> Task) -> IO ()
