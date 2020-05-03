@@ -51,6 +51,8 @@ import           Taskwarrior.UDA                ( UDA )
 import           Taskwarrior.Annotation         ( Annotation )
 import qualified Taskwarrior.Time              as Time
 import qualified Data.HashMap.Strict           as HashMap
+import           Data.Set                       ( Set )
+import qualified Data.Set                      as Set
 import           Foreign.Marshal.Utils          ( fromBool )
 
 -- | A 'Task' represents a task from taskwarrior.
@@ -72,12 +74,12 @@ data Task = Task {
         modified       :: Maybe UTCTime,
         due            :: Maybe UTCTime,
         until          :: Maybe UTCTime,
-        annotations    :: [Annotation],
+        annotations    :: Set Annotation,
         scheduled      :: Maybe UTCTime,
         project        :: Maybe Text,
         priority       :: Maybe Priority,
-        depends        :: [UUID],
-        tags           :: [Tag],
+        depends        :: Set UUID,
+        tags           :: Set Tag,
         urgency        :: Double,
         uda            :: UDA
 } deriving (Eq, Show, Read)
@@ -132,7 +134,9 @@ instance FromJSON Task where
     project     <- object .:? "project"
     priority    <- join
       <$> parseFromFieldWithMay Priority.parseMay object "priority"
-    depends <- maybe (pure []) parseUuidList (HashMap.lookup "depends" object)
+    depends <- maybe (pure mempty)
+                     parseUuidList
+                     (HashMap.lookup "depends" object)
     tags    <- Foldable.fold <$> object .:? "tags"
     urgency <- fromMaybe 0 <$> object .:? "urgency"
     pure Task { until = until_, .. }
@@ -145,9 +149,12 @@ parseFromFieldWithMay
 parseFromFieldWithMay parser object name =
   traverse parser (HashMap.lookup name object)
 
-parseUuidList :: Aeson.Value -> Aeson.Types.Parser [UUID]
+parseUuidList :: Aeson.Value -> Aeson.Types.Parser (Set UUID)
 parseUuidList =
-  withText "Text" $ mapM (parseJSON . Aeson.String) . Text.splitOn ","
+  withText "Text"
+    $ fmap Set.fromList
+    . mapM (parseJSON . Aeson.String)
+    . Text.splitOn ","
 
 instance ToJSON Task where
   toJSON Task { until = until_, ..} =
@@ -159,7 +166,7 @@ instance ToJSON Task where
          ]
       <> [ "urgency" .= urgency | urgency /= 0 ]
       <> maybe [] RecurringChild.toPairs recurringChild
-      <> ifNotNullList annotations ("annotations" .=)
+      <> ifNotNullSet annotations ("annotations" .=)
       <> Maybe.mapMaybe
            (\(name, value) -> (name .=) . Time.toValue <$> value)
            [ ("start"    , start)
@@ -173,16 +180,21 @@ instance ToJSON Task where
            , ("project" .=) <$> project
            , ("priority" .=) <$> priority
            ]
-      <> ifNotNullList
+      <> ifNotNullSet
            depends
-           (("depends" .=) . Text.intercalate "," . fmap UUID.toText)
-      <> ifNotNullList tags ("tags" .=)
+           ( ("depends" .=)
+           . Text.intercalate ","
+           . fmap UUID.toText
+           . Set.toList
+           )
+      <> ifNotNullSet tags ("tags" .=)
       <> HashMap.toList uda
 
-ifNotNullList :: [b] -> ([b] -> a) -> [a]
-ifNotNullList list f =
-  (Semigroup.stimesMonoid . (fromBool :: Bool -> Integer) . not . null $ list)
-    [f list]
+ifNotNullSet :: (Ord b) => Set b -> (Set b -> a) -> [a]
+ifNotNullSet set f =
+  (Semigroup.stimesMonoid . (fromBool :: Bool -> Integer) . not . Set.null $ set
+    )
+    [f set]
 
 -- | Makes a Task with the given mandatory fields uuid, entry time and description. See createTask for a non-pure version which needs less parameters.
 makeTask :: UUID -> UTCTime -> Text -> Task
@@ -199,9 +211,9 @@ makeTask uuid entry description = Task { uuid
                                        , start          = Nothing
                                        , scheduled      = Nothing
                                        , until          = Nothing
-                                       , annotations    = []
-                                       , depends        = []
-                                       , tags           = []
+                                       , annotations    = mempty
+                                       , depends        = mempty
+                                       , tags           = mempty
                                        , urgency        = 0
                                        , uda            = HashMap.empty
                                        }
