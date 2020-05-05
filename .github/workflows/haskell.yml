@@ -7,11 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ghc: [ '8.8.1', '8.6.5' ]
+        ghc: [ 'latest', '8.6', '8.8', '8.10' ]
         cabal: [ '3.0' ]
     steps:
     - uses: actions/checkout@v1
-    - uses: actions/setup-haskell@v1
+    - uses: actions/setup-haskell@v1.1
       with:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
@@ -24,19 +24,19 @@ jobs:
           ghc-${{ matrix.ghc }}-cabal-${{ matrix.cabal }}-build
     - name: Prepare cabal
       run: |
-         cabal new-update
-         cabal new-build --only-dependencies
-         cabal new-install hlint brittany --installdir=.
+         cabal update
+         cabal build --only-dependencies
+         cabal install hlint brittany --installdir=.
          sed -i "s/-Wall/-Wall -Werror/" taskwarrior.cabal
     - name: Build
-      run: cabal new-build
+      run: cabal build
     - name: Test
-      run: cabal new-test
+      run: cabal test
     - name: Build documentation
       run: |
-         cabal new-haddock
-         ! cabal new-haddock | grep "Missing documentation" -B1 > /dev/null
-         ! cabal new-haddock | grep "is out of scope" -B1 > /dev/null
+         cabal haddock
+         ! cabal haddock | grep "Missing documentation" -B1 > /dev/null
+         ! cabal haddock | grep "is out of scope" -B1 > /dev/null
     - name: Run hlint
       run: ./hlint src
     - name: Check formatting
