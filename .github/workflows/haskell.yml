@@ -8,13 +8,12 @@ jobs:
     strategy:
       matrix:
         ghc: [ 'latest', '8.6', '8.8', '8.10' ]
-        cabal: [ '3.0' ]
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-haskell@v1.1
       with:
         ghc-version: ${{ matrix.ghc }}
-        cabal-version: ${{ matrix.cabal }}
+        cabal-version: 'latest'
     - name: Cache cabal
       uses: actions/cache@v1
       with:
