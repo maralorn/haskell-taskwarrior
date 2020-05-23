@@ -1,5 +1,10 @@
 # Revision history for taskwarrior
 
+## 0.3.0.0
+
+* Only export `id` and `urgency` when non default.
+* Change use of `[]` to `Set` because that matches the semantic better.
+
 ## 0.2.1.0
 
 * Add helpers for onAdd and onModify hooks.
