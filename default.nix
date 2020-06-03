@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs ? import <nixpkgs-master> { } }:
 
 let
   haskellPackages = pkgs.haskellPackages;
