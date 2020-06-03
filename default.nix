@@ -13,6 +13,7 @@ in {
       cabal-install
       brittany
       pkgs.coreutils
+      ghcide
     ];
   };
 }
