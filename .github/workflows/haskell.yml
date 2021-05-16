@@ -18,7 +18,6 @@ jobs:
         # If you chose API tokens for write access OR if you have a private cache
         #authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - run: nix-build test.nix
-    - run: nix-shell --run "echo OK"
 
 #         sed -i "s/-Wall/-Wall -Werror/" taskwarrior.cabal
 #         ! cabal haddock | grep "Missing documentation" -B1 > /dev/null
