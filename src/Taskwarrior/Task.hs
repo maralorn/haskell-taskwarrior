@@ -204,7 +204,7 @@ ifNotNullSet set f =
   )
     [f set]
 
--- | Makes a Task with the given mandatory fields uuid, entry time and description. See createTask for a non-pure version which needs less parameters.
+-- | Makes a fresh Task with the given mandatory fields uuid, entry time and description. See createTask for a non-pure version which needs less parameters.
 makeTask :: UUID -> UTCTime -> Text -> Task
 makeTask uuid entry description =
   Task
