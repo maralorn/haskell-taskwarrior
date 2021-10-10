@@ -1,13 +1,12 @@
 -- | The Mask module models the state a recurring parent saves about its child tasks.
-module Taskwarrior.Mask
-  ( Mask(..)
-  , MaskState
-  )
-where
+module Taskwarrior.Mask (
+  Mask (..),
+  MaskState,
+) where
 
-import qualified Data.Text                     as Text
-import qualified Data.Aeson                    as Aeson
-import qualified Data.Aeson.Types              as Aeson.Types
+import qualified Data.Aeson as Aeson
+import qualified Data.Aeson.Types as Aeson.Types
+import qualified Data.Text as Text
 
 -- | Represents the state of a child in a 'Status.Recurring' 'Task.Task'.
 data MaskState = Pending | Completed | Deleted | Waiting deriving (Eq, Show, Enum, Read, Ord, Bounded)
@@ -17,10 +16,10 @@ newtype Mask = Mask {mask :: [MaskState]} deriving (Eq, Read, Ord, Show)
 
 toChar :: MaskState -> Char
 toChar = \case
-  Pending   -> '-'
+  Pending -> '-'
   Completed -> '+'
-  Deleted   -> 'X'
-  Waiting   -> 'W'
+  Deleted -> 'X'
+  Waiting -> 'W'
 
 instance Aeson.FromJSON Mask where
   parseJSON =
@@ -28,10 +27,10 @@ instance Aeson.FromJSON Mask where
 
 parseChar :: Char -> Aeson.Types.Parser MaskState
 parseChar = \case
-  '-'  -> pure Pending
-  '+'  -> pure Completed
-  'X'  -> pure Deleted
-  'W'  -> pure Waiting
+  '-' -> pure Pending
+  '+' -> pure Completed
+  'X' -> pure Deleted
+  'W' -> pure Waiting
   char -> fail $ "Not a Mask Char: '" ++ [char] ++ "'"
 
 instance Aeson.ToJSON Mask where
