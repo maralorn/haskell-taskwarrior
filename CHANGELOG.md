@@ -1,5 +1,10 @@
 # Revision history for taskwarrior
 
+## 0.4.0.0
+
+* Update to aeson 2.0.
+* Change UDA Type from HashMap to ordered Map.
+
 ## 0.3.0.0
 
 * Only export `id` and `urgency` when non default.

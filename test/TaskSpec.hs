@@ -8,7 +8,7 @@ import Control.Arrow (second)
 import Prelude hiding (id)
 
 import Data.Aeson
-import qualified Data.HashMap.Strict as HashMap
+import qualified Data.Map.Strict as Map
 import Data.Time
 import Taskwarrior.Annotation
 import Taskwarrior.Mask
@@ -91,5 +91,5 @@ instance Arbitrary Task where
     depends <- arbitrary
     tags <- arbitrary
     urgency <- arbitrary
-    uda <- HashMap.fromList . fmap (second String) <$> arbitrary
+    uda <- Map.fromList . fmap (second String) <$> arbitrary
     pure Task{until = until_, ..}

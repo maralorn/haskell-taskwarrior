@@ -33,9 +33,11 @@ import Data.Aeson (
   (.=),
  )
 import qualified Data.Aeson as Aeson
+import qualified Data.Aeson.Key as Key
+import qualified Data.Aeson.KeyMap as KeyMap
 import qualified Data.Aeson.Types as Aeson.Types
 import qualified Data.Foldable as Foldable
-import qualified Data.HashMap.Strict as HashMap
+import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe)
 import qualified Data.Maybe as Maybe
 import qualified Data.Semigroup as Semigroup
@@ -61,7 +63,7 @@ import Taskwarrior.UDA (UDA)
  The specification demands, that the existence of some fields is dependent on the status of the task.
  Those fields are therefore bundled in 'Status' as a sum-type.
 
- All fields in an imported task which are not part of the specification will be put in the 'UDA' (user defined attributes) 'Data.HashMap.Strict.HashMap'.
+ All fields in an imported task which are not part of the specification will be put in the 'UDA' (user defined attributes) 'Data.Map.Strict.Map Data.Text.Text'.
 
  Since the json can have multiple semantically equivalent representations of a task first serializing and then deserializing is not identity.
  But deserializing and then serializing should be. (Thus making serializing and deserializing idempotent.)
@@ -120,7 +122,7 @@ reservedKeys =
 instance FromJSON Task where
   parseJSON = withObject "Task" $ \object -> do
     let parseTimeFromFieldMay = parseFromFieldWithMay Time.parse object
-        uda = HashMap.filterWithKey (\k _ -> k `notElem` reservedKeys) object
+        uda = Map.filterWithKey (\k _ -> k `notElem` reservedKeys) . Map.mapKeys Key.toText $ KeyMap.toMap object
     status <- Status.parseFromObject object
     recurringChild <- RecurringChild.parseFromObjectMay object
     uuid <- object .: "uuid"
@@ -142,7 +144,7 @@ instance FromJSON Task where
       maybe
         (pure mempty)
         parseUuidList
-        (HashMap.lookup "depends" object)
+        (KeyMap.lookup (Key.fromText "depends") object)
     tags <- Foldable.fold <$> object .:? "tags"
     urgency <- fromMaybe 0 <$> object .:? "urgency"
     pure Task{until = until_, ..}
@@ -153,7 +155,7 @@ parseFromFieldWithMay ::
   Text ->
   Aeson.Types.Parser (Maybe a)
 parseFromFieldWithMay parser object name =
-  traverse parser (HashMap.lookup name object)
+  traverse parser (KeyMap.lookup (Key.fromText name) object)
 
 parseUuidList :: Aeson.Value -> Aeson.Types.Parser (Set UUID)
 parseUuidList =
@@ -194,7 +196,7 @@ instance ToJSON Task where
               . Set.toList
           )
         <> ifNotNullSet tags ("tags" .=)
-        <> HashMap.toList uda
+        <> Map.toList (Map.mapKeys Key.fromText uda)
 
 ifNotNullSet :: (Ord b) => Set b -> (Set b -> a) -> [a]
 ifNotNullSet set f =
@@ -223,5 +225,5 @@ makeTask uuid entry description =
     , depends = mempty
     , tags = mempty
     , urgency = 0
-    , uda = HashMap.empty
+    , uda = Map.empty
     }
