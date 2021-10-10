@@ -35,10 +35,10 @@ Any form of issue reports, general feedback, feature requests or suggestions and
 
 Also I'd be curious to know what you use this library for.
 
-This project uses brittany in default configuration as code formatter.
-The tests on github will check for hlints, missing docs and unapplied formatting.
+This project uses fourmolu as code formatter.
 
 ## Help & Contact
 
-You can always open an issue on GitHub. You can also ask in `#haskell-taskwarrior` on freenode irc. If you don‘t have an irc client you can log in via [the webchat](https://webchat.freenode.net/#haskell-taskwarrior).
-Shooting @maralorn a mail is also an option. But of course that won’t be public and therefore not help anyone else.
+You can always open an issue on GitHub. Contacting @maralorn:maralorn.de on
+matrix is also an option. But of course that won’t be public and therefore not
+help anyone else.
