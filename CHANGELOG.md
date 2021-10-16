@@ -2,8 +2,12 @@
 
 ## 0.4.0.0
 
-* Update to aeson 2.0.
+### Breaking Change
 * Change UDA Type from HashMap to ordered Map.
+
+### Maintenance
+* Update to aeson 2.0.
+* Improve test.nix
 
 ## 0.3.0.0
 
