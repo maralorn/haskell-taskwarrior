@@ -4,3 +4,4 @@ dist
 .shake
 .envrc
 .direnv
+result
