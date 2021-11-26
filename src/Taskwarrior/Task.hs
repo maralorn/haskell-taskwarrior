@@ -20,22 +20,25 @@ module Taskwarrior.Task (
 
 import Prelude hiding (id)
 
+import Control.Applicative ((<|>))
 import Control.Monad (join)
 import Data.Aeson (
   FromJSON,
   ToJSON,
   Value,
   parseJSON,
+  withArray,
   withObject,
   withText,
   (.:),
   (.:?),
-  (.=), withArray
+  (.=),
  )
 import qualified Data.Aeson as Aeson
 import qualified Data.Aeson.Key as Key
 import qualified Data.Aeson.KeyMap as KeyMap
 import qualified Data.Aeson.Types as Aeson.Types
+import Data.Foldable (toList)
 import qualified Data.Foldable as Foldable
 import qualified Data.Map.Strict as Map
 import Data.Maybe (fromMaybe)
@@ -58,8 +61,6 @@ import Taskwarrior.Status (Status)
 import qualified Taskwarrior.Status as Status
 import qualified Taskwarrior.Time as Time
 import Taskwarrior.UDA (UDA)
-import Data.Foldable (toList)
-import Control.Applicative ((<|>))
 
 {- | A 'Task' represents a task from taskwarrior.
  The specification demands, that the existence of some fields is dependent on the status of the task.
@@ -161,11 +162,13 @@ parseFromFieldWithMay parser object name =
 
 parseUuidList :: Aeson.Value -> Aeson.Types.Parser (Set UUID)
 parseUuidList val =
-  (withArray "Array of uuid strings" $ fmap Set.fromList . mapM parseJSON . toList) val <|>
-  (withText "Comma separated list of uuids" $
-    fmap Set.fromList
-      . mapM (parseJSON . Aeson.String)
-      . Text.splitOn ",") val
+  (withArray "Array of uuid strings" $ fmap Set.fromList . mapM parseJSON . toList) val
+    <|> ( withText "Comma separated list of uuids" $
+            fmap Set.fromList
+              . mapM (parseJSON . Aeson.String)
+              . Text.splitOn ","
+        )
+      val
 
 instance ToJSON Task where
   toJSON Task{until = until_, ..} =
