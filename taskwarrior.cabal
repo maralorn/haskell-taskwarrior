@@ -4,7 +4,7 @@ name:               taskwarrior
 -- PVP summary:     +-+------- breaking API changes
 --                  | | +----- non-breaking API additions
 --                  | | | +--- code changes with no API change
-version: 0.4.1.0
+version: 0.6.0.0
 synopsis:           Types and aeson instances for taskwarrior tasks
 description:
   Types and aeson instances for the https://taskwarrior.org task import/export feature
