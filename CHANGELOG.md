@@ -4,6 +4,12 @@
 
 * Drop Wait constructor from Status. This is a breaking change and is only compatible with taskwarrior > 2.6.0
 
+## 0.5.0.0 (Backport release for aeson < 2.0)
+
+* Drop Wait constructor from Status. This is a breaking change and is only compatible with taskwarrior > 2.6.0
+
+The 0.5 release is meant to be used with aeson < 2.0, the 0.6 release works with aeson >= 2.0
+
 ## 0.4.1.0
 
 * Make JSON parsing compatible with taskwarrior 2.6.
@@ -16,6 +22,10 @@
 ### Maintenance
 * Update to aeson 2.0.
 * Improve test.nix
+
+## 0.3.1.0 (Backport release for aeson < 2.0)
+
+* Add support for the JSON Format of taskwarrior 2.6.
 
 ## 0.3.0.0
 
