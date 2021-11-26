@@ -1,4 +1,4 @@
-name: "Build test.nix"
+name: "Build default.nix"
 on:
   pull_request:
   push:
@@ -10,17 +10,4 @@ jobs:
     - uses: cachix/install-nix-action@v13
       with:
         nix_path: nixpkgs=channel:nixos-unstable
-        #    - uses: cachix/cachix-action@v10
-        #      with:
-        #name: mycache
-        # If you chose signing key for write access
-        #signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
-        # If you chose API tokens for write access OR if you have a private cache
-        #authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-    - run: nix-build test.nix
-
-#         sed -i "s/-Wall/-Wall -Werror/" taskwarrior.cabal
-#         ! cabal haddock | grep "Missing documentation" -B1 > /dev/null
-#         ! cabal haddock | grep "is out of scope" -B1 > /dev/null
-# run: ./hlint src
-# run: ./brittany -c src/**/*.hs
+    - run: nix-build
