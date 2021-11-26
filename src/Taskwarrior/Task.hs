@@ -30,7 +30,7 @@ import Data.Aeson (
   withText,
   (.:),
   (.:?),
-  (.=),
+  (.=), withArray
  )
 import qualified Data.Aeson as Aeson
 import qualified Data.Aeson.Key as Key
@@ -58,6 +58,8 @@ import Taskwarrior.Status (Status)
 import qualified Taskwarrior.Status as Status
 import qualified Taskwarrior.Time as Time
 import Taskwarrior.UDA (UDA)
+import Data.Foldable (toList)
+import Control.Applicative ((<|>))
 
 {- | A 'Task' represents a task from taskwarrior.
  The specification demands, that the existence of some fields is dependent on the status of the task.
@@ -158,11 +160,12 @@ parseFromFieldWithMay parser object name =
   traverse parser (KeyMap.lookup (Key.fromText name) object)
 
 parseUuidList :: Aeson.Value -> Aeson.Types.Parser (Set UUID)
-parseUuidList =
-  withText "Text" $
+parseUuidList val =
+  (withArray "Array of uuid strings" $ fmap Set.fromList . mapM parseJSON . toList) val <|>
+  (withText "Comma separated list of uuids" $
     fmap Set.fromList
       . mapM (parseJSON . Aeson.String)
-      . Text.splitOn ","
+      . Text.splitOn ",") val
 
 instance ToJSON Task where
   toJSON Task{until = until_, ..} =
