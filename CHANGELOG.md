@@ -1,5 +1,9 @@
 # Revision history for taskwarrior
 
+## 0.4.1.0
+
+* Make JSON parsing compatible with taskwarrior 2.6.
+
 ## 0.4.0.0
 
 ### Breaking Change
