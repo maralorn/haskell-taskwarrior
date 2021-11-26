@@ -33,7 +33,6 @@ data Status
   = Pending
   | Deleted {end :: UTCTime}
   | Completed {end :: UTCTime}
-  | Waiting {wait :: UTCTime}
   | Recurring
       { recur :: Text
       , mask :: Mask
@@ -47,7 +46,6 @@ parseFromObject o =
     "pending" -> pure Pending
     "deleted" -> Deleted <$> (o .: "end" >>= Time.parse)
     "completed" -> Completed <$> (o .: "end" >>= Time.parse)
-    "waiting" -> Waiting <$> (o .: "wait" >>= Time.parse)
     "recurring" -> Recurring <$> o .: "recur" <*> o .: "mask"
     str -> typeMismatch "status" (Aeson.String str)
 
@@ -57,7 +55,6 @@ toPairs = \case
   Pending -> [statusLabel "pending"]
   Deleted{..} -> [statusLabel "deleted", "end" .= Time.toValue end]
   Completed{..} -> [statusLabel "completed", "end" .= Time.toValue end]
-  Waiting{..} -> [statusLabel "waiting", "wait" .= Time.toValue wait]
   Recurring{..} -> [statusLabel "recurring", "recur" .= recur, "mask" .= mask]
  where
   statusLabel :: Text -> Pair

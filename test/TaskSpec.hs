@@ -48,7 +48,6 @@ instance Arbitrary Status where
       [ pure Pending
       , Deleted <$> arbitrary
       , Completed <$> arbitrary
-      , Waiting <$> arbitrary
       , Recurring <$> arbitrary <*> arbitrary
       ]
 
@@ -81,6 +80,7 @@ instance Arbitrary Task where
     entry <- arbitrary
     description <- arbitrary
     start <- arbitrary
+    wait <- arbitrary
     modified <- arbitrary
     due <- arbitrary
     until_ <- arbitrary

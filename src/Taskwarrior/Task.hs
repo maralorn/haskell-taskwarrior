@@ -80,6 +80,7 @@ data Task = Task
   , description :: Text
   , start :: Maybe UTCTime
   , modified :: Maybe UTCTime
+  , wait :: Maybe UTCTime
   , due :: Maybe UTCTime
   , until :: Maybe UTCTime
   , annotations :: Set Annotation
@@ -134,6 +135,7 @@ instance FromJSON Task where
     entry <- object .: "entry" >>= Time.parse
     description <- object .: "description"
     start <- parseTimeFromFieldMay "start"
+    wait <- parseTimeFromFieldMay "wait"
     modified <- parseTimeFromFieldMay "modified"
     due <- parseTimeFromFieldMay "due"
     until_ <- parseTimeFromFieldMay "until"
@@ -185,6 +187,7 @@ instance ToJSON Task where
           (\(name, value) -> (name .=) . Time.toValue <$> value)
           [ ("start", start)
           , ("modified", modified)
+          , ("wait", wait)
           , ("due", due)
           , ("scheduled", scheduled)
           , ("until", until_)
@@ -227,6 +230,7 @@ makeTask uuid entry description =
     , start = Nothing
     , scheduled = Nothing
     , until = Nothing
+    , wait = Nothing
     , annotations = mempty
     , depends = mempty
     , tags = mempty
