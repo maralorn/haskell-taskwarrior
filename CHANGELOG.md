@@ -1,5 +1,9 @@
 # Revision history for taskwarrior
 
+## 0.6.0.1
+
+* Bump bounds
+
 ## 0.6.0.0
 
 * Drop Wait constructor from Status. This is a breaking change and is only compatible with taskwarrior > 2.6.0
