@@ -1,13 +1,6 @@
 { sources ? import ./nix/sources.nix, pkgs ? import sources.nixpkgs { } }:
 let
-  haskellPackages = pkgs.haskellPackages.override {
-    overrides = final: prev: {
-      semialign = final.callHackage "semialign" "1.2" { };
-      time-compat = final.callHackage "time-compat" "1.9.6.1" { };
-      aeson = final.callHackage "aeson" "2.0.1.0" { };
-      hashable = final.callHackage "hashable" "1.3.4.1" { };
-    };
-  };
+  inherit (pkgs) haskellPackages;
 in
 pkgs.haskell.lib.overrideCabal (haskellPackages.callCabal2nix "taskwarrior" ./. {}) {
   postPatch = ''
