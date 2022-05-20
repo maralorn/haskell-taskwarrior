@@ -69,7 +69,7 @@ test-suite test-taskwarrior
     , aeson
     , base
     , containers
-    , hspec                 >=2.7.1 && < 2.10
+    , hspec                 >=2.7.1 && < 2.11
     , QuickCheck            >=2.13.2 && <2.15
     , quickcheck-instances  ^>=0.3.22
     , taskwarrior
