@@ -1,5 +1,9 @@
 # Revision history for taskwarrior
 
+## 0.6.0.3
+
+* Bump bounds for aeson 2.1
+
 ## 0.6.0.2
 
 * Bump bounds for text 2.0
