@@ -16,10 +16,8 @@ module Taskwarrior.IO (
 import Control.Monad (when)
 import qualified Data.Aeson as Aeson
 import qualified Data.ByteString as BS
-import qualified Data.ByteString.Lazy as LBS hiding (
-  putStrLn,
- )
-import qualified Data.ByteString.Lazy.Char8 as LBS
+import qualified Data.ByteString.Lazy as LBS
+import qualified Data.ByteString.Lazy.Char8 as LBSC
 import Data.Text (Text)
 import qualified Data.Text as Text
 import Data.Time (getCurrentTime)
@@ -77,7 +75,7 @@ getUUIDs args =
       input <- LBS.hGetContents stdout
       maybe (fail "Couldn't parse UUIDs") return
         . traverse UUID.fromLazyASCIIBytes
-        . LBS.lines
+        . LBSC.lines
         $ input
 
 -- | Uses @task import@ to save the given tasks.
@@ -123,7 +121,7 @@ onModify :: (Task -> Task -> IO Task) -> IO ()
 onModify f = do
   original <- readTaskLine onModifyError
   modified <- readTaskLine onModifyError
-  LBS.putStrLn . Aeson.encode =<< f original modified
+  LBSC.putStrLn . Aeson.encode =<< f original modified
 
 readTaskLine :: String -> IO Task
 readTaskLine errorMsg =
@@ -136,6 +134,6 @@ onAddPure f = onAdd (pure . f)
 -- | Like onAddPure with side effects.
 onAdd :: (Task -> IO Task) -> IO ()
 onAdd f =
-  LBS.putStrLn . Aeson.encode =<< f
+  LBSC.putStrLn . Aeson.encode =<< f
     =<< readTaskLine
       "OnAdd hook couldn‘t parse task."

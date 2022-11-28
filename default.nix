@@ -1,6 +1,6 @@
 { sources ? import ./nix/sources.nix, pkgs ? import sources.nixpkgs { } }:
 let
-  inherit (pkgs) haskellPackages;
+  haskellPackages = pkgs.haskell.packages.ghc94;
 in
 pkgs.haskell.lib.overrideCabal (haskellPackages.callCabal2nix "taskwarrior" ./. {}) {
   postPatch = ''

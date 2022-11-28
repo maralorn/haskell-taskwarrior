@@ -1,5 +1,9 @@
 # Revision history for taskwarrior
 
+## 0.6.0.4
+
+* GHC 9.4 compatibility
+
 ## 0.6.0.3
 
 * Bump bounds for aeson 2.1
