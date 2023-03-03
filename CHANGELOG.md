@@ -1,5 +1,9 @@
 # Revision history for taskwarrior
 
+## 0.6.0.5
+
+* Bump upper base bound
+
 ## 0.6.0.4
 
 * GHC 9.4 compatibility
