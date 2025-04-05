@@ -1,6 +1,5 @@
 # taskwarrior
 
-[![Hackage Deps](https://img.shields.io/hackage-deps/v/taskwarrior.svg)](http://packdeps.haskellers.com/reverse/taskwarrior)
 [![CI](https://github.com/maralorn/haskell-taskwarrior/actions/workflows/haskell.yml/badge.svg)](https://github.com/maralorn/haskell-taskwarrior/actions)
 [![Packaging status](https://repology.org/badge/vertical-allrepos/haskell:taskwarrior.svg?columns=3&header=)](https://repology.org/project/haskell:taskwarrior/versions)
 
