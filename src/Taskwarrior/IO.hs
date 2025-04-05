@@ -134,6 +134,7 @@ onAddPure f = onAdd (pure . f)
 -- | Like onAddPure with side effects.
 onAdd :: (Task -> IO Task) -> IO ()
 onAdd f =
-  LBSC.putStrLn . Aeson.encode =<< f
+  LBSC.putStrLn . Aeson.encode
+    =<< f
     =<< readTaskLine
       "OnAdd hook couldn‘t parse task."
