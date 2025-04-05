@@ -1,5 +1,9 @@
 # Revision history for taskwarrior
 
+## 0.6.0.7 (2025-03-05)
+
+* Bump bounds
+
 ## 0.6.0.6 (2023-07-31)
 
 * Bump upper bounds on hspec, aeson and bytestring
