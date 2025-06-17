@@ -15,7 +15,7 @@ module Taskwarrior.IO (
 
 import Control.Monad (when)
 import qualified Data.Aeson as Aeson
-import qualified Data.ByteString as BS
+import qualified Data.ByteString.Char8 as BSC
 import qualified Data.ByteString.Lazy as LBS
 import qualified Data.ByteString.Lazy.Char8 as LBSC
 import Data.Text (Text)
@@ -125,7 +125,7 @@ onModify f = do
 
 readTaskLine :: String -> IO Task
 readTaskLine errorMsg =
-  maybe (fail errorMsg) pure . Aeson.decode' . LBS.fromStrict =<< BS.getLine
+  maybe (fail errorMsg) pure . Aeson.decode' . LBS.fromStrict =<< BSC.getLine
 
 -- | Like onModifyPure but for the onAdd hook.
 onAddPure :: (Task -> Task) -> IO ()
