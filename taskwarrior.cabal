@@ -67,7 +67,7 @@ test-suite test-taskwarrior
     , base
     , containers
     , hspec                 >=2.7.1 && < 2.12
-    , QuickCheck            >=2.13.2 && <2.16
+    , QuickCheck >=2.13.2 && <2.17
     , quickcheck-instances  ^>=0.3.22
     , taskwarrior
     , text
