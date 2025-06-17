@@ -1,12 +1,18 @@
-{ sources ? import ./nix/sources.nix, pkgs ? import sources.nixpkgs { } }:
+{
+  sources ? import ./nix/sources.nix,
+  pkgs ? import sources.nixpkgs { },
+}:
 let
   haskellPackages = pkgs.haskellPackages;
 in
-pkgs.haskell.lib.overrideCabal (haskellPackages.callCabal2nix "taskwarrior" ./. {}) {
+pkgs.haskell.lib.overrideCabal (haskellPackages.callCabal2nix "taskwarrior" ./. { }) {
   postPatch = ''
     sed -i "s/-Wall/-Wall -Werror/" taskwarrior.cabal
   '';
-  testToolDepends = with pkgs.haskellPackages; [ cabal-install hlint fourmolu ];
+  testToolDepends = builtins.attrValues {
+    inherit (pkgs) cabal-install hlint fourmolu;
+    inherit (pkgs.haskellPackages) cabal-gild;
+  };
   postCheck = ''
     echo "Checking hlint hints …"
     hlint src
@@ -14,6 +20,10 @@ pkgs.haskell.lib.overrideCabal (haskellPackages.callCabal2nix "taskwarrior" ./. 
 
     echo "Checking formatting with fourmolu …"
     fourmolu -m check src/**/*.hs
+    echo "Formatting okay."
+
+    echo "Checking formatting with cabal-gild …"
+    cabal-gild -m check -i taskwarrior.cabal
     echo "Formatting okay."
   '';
   postHaddock = ''
