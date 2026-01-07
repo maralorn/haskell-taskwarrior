@@ -209,8 +209,7 @@ instance ToJSON Task where
 
 ifNotNullSet :: (Ord b) => Set b -> (Set b -> a) -> [a]
 ifNotNullSet set f =
-  ( Semigroup.stimesMonoid . (fromBool :: Bool -> Integer) . not . Set.null $ set
-  )
+  (Semigroup.stimesMonoid . (fromBool :: Bool -> Integer) . not . Set.null $ set)
     [f set]
 
 -- | Makes a fresh Task with the given mandatory fields uuid, entry time and description. See createTask for a non-pure version which needs less parameters.

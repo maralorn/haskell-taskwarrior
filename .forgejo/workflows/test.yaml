@@ -1,0 +1,17 @@
+name: Nix build
+on: [push]
+run-name: Test and build flake
+jobs:
+  nix-build:
+    runs-on: nix
+    env:
+        HOME: .
+    steps:
+      - uses: actions/checkout@v6
+      - name: Configuring remote builders
+        run: |
+          mkdir -p ~/.config/nix
+          cp $(builders-configurator) ~/.config/nix/machines
+          echo "builders = @$(pwd)/.config/nix/machines" >> ~/.config/nix/nix.conf
+      - run: nix build --log-format bar-with-logs -f. -v
+      - run: archive-nix-path haskell-taskwarrior
