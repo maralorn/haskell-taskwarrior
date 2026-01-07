@@ -1,0 +1,20 @@
+name: Nix build
+on: [push]
+run-name: Test and build flake
+jobs:
+  nix-build:
+    runs-on: nix
+    # This breaks remote builder config, but this package is so small that I don’t care right now.
+    # With the HOME set the nix build fails because of relative paths
+    # Probably wouldn’t happen in a flake based build.
+    #env:
+    #    HOME: .
+    steps:
+      - uses: actions/checkout@v6
+      - name: Configuring remote builders
+        run: |
+          mkdir -p ~/.config/nix
+          cp $(builders-configurator) ~/.config/nix/machines
+          echo "builders = @$(pwd)/.config/nix/machines" >> ~/.config/nix/nix.conf
+      - run: nix build --log-format bar-with-logs -f.
+      - run: archive-nix-path haskell-taskwarrior
