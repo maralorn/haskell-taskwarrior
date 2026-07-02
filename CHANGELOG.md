@@ -1,5 +1,9 @@
 # Revision history for taskwarrior
 
+## 0.6.0.8 (2026-07-02)
+
+* Bump bounds
+
 ## 0.6.0.7 (2025-03-05)
 
 * Bump bounds
@@ -45,9 +49,11 @@ The 0.5 release is meant to be used with aeson < 2.0, the 0.6 release works with
 ## 0.4.0.0
 
 ### Breaking Change
+
 * Change UDA Type from HashMap to ordered Map.
 
 ### Maintenance
+
 * Update to aeson 2.0.
 * Improve test.nix
 

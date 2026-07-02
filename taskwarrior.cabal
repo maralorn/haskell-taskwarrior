@@ -1,6 +1,6 @@
 cabal-version: 2.4
 name: taskwarrior
-version: 0.6.0.7
+version: 0.6.0.8
 synopsis: Types and aeson instances for taskwarrior tasks
 description:
   Types and aeson instances for the https://taskwarrior.org task import/export feature
