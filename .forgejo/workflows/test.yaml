@@ -10,7 +10,7 @@ jobs:
     #env:
     #    HOME: .
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
       - name: Configuring remote builders
         run: |
           mkdir -p ~/.config/nix
